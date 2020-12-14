@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace House.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class LocationController : Controller
     {
         private readonly HouseContext _context;
