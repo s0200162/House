@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using House.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace House.Areas.Identity.Data
 {
     public class CustomUser : IdentityUser
     {
-
+        [PersonalData]
+        public Customer customer { get; set; }
     }
 }

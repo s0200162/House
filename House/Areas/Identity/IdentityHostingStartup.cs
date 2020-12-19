@@ -1,4 +1,5 @@
 ﻿using System;
+using House.Areas.Identity.Data;
 using House.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;

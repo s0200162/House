@@ -1,4 +1,5 @@
-﻿using House.Models;
+﻿using House.Areas.Identity.Data;
+using House.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,11 @@ namespace House.Data
             modelBuilder.Entity<Customer>().Property(p => p.Firstname).IsRequired();
             modelBuilder.Entity<Customer>().Property(p => p.Email).IsRequired();
             modelBuilder.Entity<Customer>().Property(p => p.ProfessionID).IsRequired();
+
+            modelBuilder.Entity<CustomUser>()
+                .HasOne(c => c.customer)
+                .WithOne(c => c.CustomUser)
+                .HasForeignKey<Customer>(c => c.UserID);
 
             modelBuilder.Entity<Room>().ToTable("Room");
             modelBuilder.Entity<Room>().Property(p => p.Description).IsRequired();
