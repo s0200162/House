@@ -12,14 +12,11 @@ namespace House.Models
         public int CustomerID { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
-        public string Email { get; set; }
         public int ProfessionID { get; set; }
-        public Profession profession { get; set; }
-        public bool Admin { get; set; }
+        public Profession Profession { get; set; }
         public ICollection<Reservation> Reservations { get; set; }
 
         public string UserID { get; set; }
-
         public CustomUser CustomUser { get; set; }
 
         public override string ToString()

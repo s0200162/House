@@ -3,10 +3,20 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace House.Migrations
 {
-    public partial class LinkCustomerCustomUser : Migration
+    public partial class CustomUserNav : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Admin",
+                schema: "house",
+                table: "Customer");
+
+            migrationBuilder.DropColumn(
+                name: "Email",
+                schema: "house",
+                table: "Customer");
+
             migrationBuilder.AddColumn<string>(
                 name: "UserID",
                 schema: "house",
@@ -78,6 +88,22 @@ namespace House.Migrations
                 name: "UserID",
                 schema: "house",
                 table: "Customer");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "Admin",
+                schema: "house",
+                table: "Customer",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Email",
+                schema: "house",
+                table: "Customer",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
     }
 }

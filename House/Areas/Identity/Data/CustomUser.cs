@@ -10,6 +10,6 @@ namespace House.Areas.Identity.Data
     public class CustomUser : IdentityUser
     {
         [PersonalData]
-        public Customer customer { get; set; }
+        public Customer Customer { get; set; }
     }
 }

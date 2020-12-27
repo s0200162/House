@@ -30,12 +30,12 @@ namespace House
         {
             services.AddDbContext<HouseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HouseConnection")));
-            services.AddDbContext<ApplicationDbContext>(options =>
+            /*services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")));*/
             services.AddDefaultIdentity<CustomUser>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<HouseContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

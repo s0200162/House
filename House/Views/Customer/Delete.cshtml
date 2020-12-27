@@ -24,23 +24,17 @@
             @Html.DisplayFor(model => model.Lastname)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Profession)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.profession)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.profession.Description)
+            @Html.DisplayFor(model => model.Profession.Description)
         </dd class>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Admin)
+            @Html.DisplayNameFor(model => model.CustomUser)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Admin)
-        </dd>
+            @Html.DisplayFor(model => model.CustomUser.Id)
+        </dd class>
     </dl>
     
     <form asp-action="Delete">

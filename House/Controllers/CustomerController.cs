@@ -22,7 +22,7 @@ namespace House.Controllers
         // GET: Customer
         public async Task<IActionResult> Index()
         {
-            var houseContext = _context.Customer.Include(c => c.profession);
+            var houseContext = _context.Customer.Include(c => c.CustomUser).Include(c => c.Profession);
             return View(await houseContext.ToListAsync());
         }
 
@@ -35,7 +35,8 @@ namespace House.Controllers
             }
 
             var customer = await _context.Customer
-                .Include(c => c.profession)
+                .Include(c => c.CustomUser)
+                .Include(c => c.Profession)
                 .FirstOrDefaultAsync(m => m.CustomerID == id);
             if (customer == null)
             {
@@ -48,6 +49,7 @@ namespace House.Controllers
         // GET: Customer/Create
         public IActionResult Create()
         {
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["ProfessionID"] = new SelectList(_context.Profession, "ProfessionID", "Description");
             return View();
         }
@@ -57,7 +59,7 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerID,Firstname,Lastname,Email,ProfessionID,Admin")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerID,Firstname,Lastname,ProfessionID,UserID")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +67,7 @@ namespace House.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id", customer.UserID);
             ViewData["ProfessionID"] = new SelectList(_context.Profession, "ProfessionID", "Description", customer.ProfessionID);
             return View(customer);
         }
@@ -82,6 +85,7 @@ namespace House.Controllers
             {
                 return NotFound();
             }
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id", customer.UserID);
             ViewData["ProfessionID"] = new SelectList(_context.Profession, "ProfessionID", "Description", customer.ProfessionID);
             return View(customer);
         }
@@ -91,7 +95,7 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerID,Firstname,Lastname,Email,ProfessionID,Admin")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerID,Firstname,Lastname,ProfessionID,UserID")] Customer customer)
         {
             if (id != customer.CustomerID)
             {
@@ -118,6 +122,7 @@ namespace House.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id", customer.UserID);
             ViewData["ProfessionID"] = new SelectList(_context.Profession, "ProfessionID", "Description", customer.ProfessionID);
             return View(customer);
         }
@@ -131,7 +136,8 @@ namespace House.Controllers
             }
 
             var customer = await _context.Customer
-                .Include(c => c.profession)
+                .Include(c => c.CustomUser)
+                .Include(c => c.Profession)
                 .FirstOrDefaultAsync(m => m.CustomerID == id);
             if (customer == null)
             {

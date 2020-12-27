@@ -1,5 +1,6 @@
 ﻿using House.Areas.Identity.Data;
 using House.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace House.Data
 {
-    public class HouseContext : DbContext
+    public class HouseContext : IdentityDbContext<CustomUser>
     {
         public HouseContext(DbContextOptions<HouseContext> options)
             : base(options) 
@@ -21,19 +22,22 @@ namespace House.Data
         public DbSet<Location> Location { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
 
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.HasDefaultSchema("house");
 
             modelBuilder.Entity<Customer>().ToTable("Customer");
             modelBuilder.Entity<Customer>().Property(p => p.Firstname).IsRequired();
             modelBuilder.Entity<Customer>().Property(p => p.Lastname).IsRequired();
-            modelBuilder.Entity<Customer>().Property(p => p.Firstname).IsRequired();
-            modelBuilder.Entity<Customer>().Property(p => p.Email).IsRequired();
             modelBuilder.Entity<Customer>().Property(p => p.ProfessionID).IsRequired();
 
             modelBuilder.Entity<CustomUser>()
-                .HasOne(c => c.customer)
+                .HasOne(c => c.Customer)
                 .WithOne(c => c.CustomUser)
                 .HasForeignKey<Customer>(c => c.UserID);
 
