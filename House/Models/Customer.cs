@@ -25,6 +25,7 @@ namespace House.Models
             stringbuilder.Append($"CustomerID: {CustomerID}; ");
             stringbuilder.Append($"Firstname: {Firstname}; ");
             stringbuilder.Append($"Lastname: {Lastname}; ");
+            stringbuilder.Append($"Profession: {Profession}; ");
 
             return stringbuilder.ToString();
         }

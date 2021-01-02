@@ -4,9 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using House.Areas.Identity.Data;
+using House.Data;
+using House.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace House.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +18,16 @@ namespace House.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
+        private readonly HouseContext _context;
 
         public IndexModel(
             UserManager<CustomUser> userManager,
-            SignInManager<CustomUser> signInManager)
+            SignInManager<CustomUser> signInManager,
+            HouseContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -31,8 +38,22 @@ namespace House.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
+        public IEnumerable<SelectListItem> Professions { get; set; }
+
         public class InputModel
         {
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Firstname")]
+            public string Firstname { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Lastname")]
+            public string Lastname { get; set; }
+
+            public int ProfessionID { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -45,14 +66,22 @@ namespace House.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+            Customer customer = await _context.Customer.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            user.Customer = customer;
+
             Input = new InputModel
             {
+                Firstname = user.Customer.Firstname,
+                Lastname = user.Customer.Lastname,
+                ProfessionID = user.Customer.ProfessionID,
                 PhoneNumber = phoneNumber
             };
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
+            List<Profession> availableProfessions = _context.Profession.ToList();
+            Professions = availableProfessions.Select(x => new SelectListItem() { Text = x.Description, Value = x.ProfessionID.ToString() }).ToList();
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -65,6 +94,8 @@ namespace House.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
+            List<Profession> availableProfessions = _context.Profession.ToList();
+            Professions = availableProfessions.Select(x => new SelectListItem() { Text = x.Description, Value = x.ProfessionID.ToString() }).ToList();
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -87,6 +118,15 @@ namespace House.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+
+            Customer customer = await _context.Customer.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            user.Customer = customer;
+
+            user.Customer.Firstname = Input.Firstname;
+            user.Customer.Lastname = Input.Lastname;
+            user.Customer.Profession = _context.Profession.Where(x => x.ProfessionID == Input.ProfessionID).FirstOrDefault();
+
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

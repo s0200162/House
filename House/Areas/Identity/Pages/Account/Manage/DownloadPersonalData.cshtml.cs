@@ -5,9 +5,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using House.Areas.Identity.Data;
+using House.Data;
+using House.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace House.Areas.Identity.Pages.Account.Manage
@@ -16,13 +19,16 @@ namespace House.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CustomUser> _userManager;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
+        private readonly HouseContext _context;
 
         public DownloadPersonalDataModel(
             UserManager<CustomUser> userManager,
-            ILogger<DownloadPersonalDataModel> logger)
+            ILogger<DownloadPersonalDataModel> logger,
+            HouseContext context)
         {
             _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -35,6 +41,8 @@ namespace House.Areas.Identity.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' asked for their personal data.", _userManager.GetUserId(User));
 
+            Customer customer = await _context.Customer.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            user.Customer = customer;
             // Only include personal data for download
             var personalData = new Dictionary<string, string>();
             var personalDataProps = typeof(CustomUser).GetProperties().Where(

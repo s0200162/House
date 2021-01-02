@@ -69,7 +69,7 @@ namespace House
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
 
-                // CreateUserRoles(serviceProvider).Wait();
+                //CreateUserRoles(serviceProvider).Wait();
             });
 
            
@@ -80,7 +80,7 @@ namespace House
         private async Task CreateUserRoles(IServiceProvider serviceProvider)
         {
             RoleManager<IdentityRole> roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            ApplicationDbContext Context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            HouseContext Context = serviceProvider.GetRequiredService<HouseContext>();
 
             IdentityResult roleResult;
 
@@ -90,7 +90,7 @@ namespace House
                 roleResult = await roleManager.CreateAsync(new IdentityRole("Admin"));
             }
 
-            IdentityUser user = Context.Users.FirstOrDefault(u => u.Email == "s0200162@student.thomasmore.be");
+            IdentityUser user = Context.Users.FirstOrDefault(u => u.Email == "tom@sch.com");
             if (user != null)
             {
                 DbSet<IdentityUserRole<string>> roles = Context.UserRoles;
