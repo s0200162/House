@@ -57,7 +57,9 @@ namespace House.Data
 
             modelBuilder.Entity<Location>().ToTable("Location");
             modelBuilder.Entity<Location>().Property(p => p.Name).IsRequired();
+            modelBuilder.Entity<Location>().Property(p => p.Place).IsRequired();
             modelBuilder.Entity<Location>().Property(p => p.Adress).IsRequired();
+            modelBuilder.Entity<Location>().Ignore(p => p.NameAndPlace);
 
             modelBuilder.Entity<Invoice>().ToTable("Invoice");
             modelBuilder.Entity<Invoice>().Property(p => p.Date).IsRequired();

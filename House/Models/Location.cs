@@ -11,6 +11,7 @@ namespace House.Models
         public string Name { get; set; }
         public string Place { get; set; }
         public string Adress { get; set; }
+        public string NameAndPlace => $"{Name}, {Place}";
         public ICollection<Room> Rooms { get; set; }
     }
 }

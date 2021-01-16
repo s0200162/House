@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
 using Microsoft.AspNetCore.Authorization;
+using House.ViewModels;
 
 namespace House.Controllers
 {
@@ -50,8 +51,11 @@ namespace House.Controllers
         // GET: Room/Create
         public IActionResult Create()
         {
-            ViewData["LocationID"] = new SelectList(_context.Location, "LocationID", "Adress");
-            return View();
+            CreateRoomViewModel viewModel = new CreateRoomViewModel();
+            viewModel.Room = new Room();
+            viewModel.Locations = new SelectList(_context.Location, "LocationID", "NameAndPlace");
+            
+            return View(viewModel);
         }
 
         // POST: Room/Create
@@ -59,16 +63,16 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RoomID,LocationID,Description,PriceHour")] Room room)
+        public async Task<IActionResult> Create(CreateRoomViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(room);
+                _context.Add(viewModel.Room);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocationID"] = new SelectList(_context.Location, "LocationID", "Adress", room.LocationID);
-            return View(room);
+            viewModel.Locations = new SelectList(_context.Location, "LocationID", "NameAndPlace", viewModel.Room.LocationID);
+            return View(viewModel);
         }
 
         // GET: Room/Edit/5
@@ -79,13 +83,14 @@ namespace House.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Room.FindAsync(id);
-            if (room == null)
+            EditRoomViewModel viewModel = new EditRoomViewModel();
+            viewModel.Room = await _context.Room.FindAsync(id);
+            if (viewModel.Room == null)
             {
                 return NotFound();
             }
-            ViewData["LocationID"] = new SelectList(_context.Location, "LocationID", "Adress", room.LocationID);
-            return View(room);
+            viewModel.Locations = new SelectList(_context.Location, "LocationID", "NameAndPlace", viewModel.Room.LocationID);
+            return View(viewModel);
         }
 
         // POST: Room/Edit/5
@@ -93,35 +98,22 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RoomID,LocationID,Description,PriceHour")] Room room)
+        public async Task<IActionResult> Edit(int id, EditRoomViewModel viewModel)
         {
-            if (id != room.RoomID)
+            if (id != viewModel.Room.RoomID)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(room);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoomExists(room.RoomID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(viewModel.Room);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocationID"] = new SelectList(_context.Location, "LocationID", "Adress", room.LocationID);
-            return View(room);
+            viewModel.Locations = new SelectList(_context.Location, "LocationID", "NameAndPlace", viewModel.Room.LocationID);
+            return View(viewModel);
         }
 
         // GET: Room/Delete/5
