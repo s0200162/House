@@ -49,7 +49,7 @@ namespace House.Controllers
         // GET: Reservation/Create
         public IActionResult Create()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Email");
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname");
             ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description");
             return View();
         }
@@ -67,7 +67,7 @@ namespace House.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Email", reservation.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
             ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
             return View(reservation);
         }
@@ -85,7 +85,7 @@ namespace House.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Email", reservation.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
             ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
             return View(reservation);
         }
@@ -122,7 +122,7 @@ namespace House.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Email", reservation.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
             ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
             return View(reservation);
         }

@@ -34,27 +34,30 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (Reservation reservation in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.room.Description)
+                @Html.DisplayFor(modelItem => reservation.customer.Firstname)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Date)
+                @Html.DisplayFor(modelItem => reservation.room.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BeginTime)
+                @Html.DisplayFor(modelItem => reservation.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
+                @Html.DisplayFor(modelItem => reservation.BeginTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                @Html.DisplayFor(modelItem => reservation.EndTime)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ReservationID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ReservationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ReservationID">Delete</a>
+                @Html.DisplayFor(modelItem => reservation.Price)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@reservation.ReservationID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@reservation.ReservationID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@reservation.ReservationID">Delete</a>
             </td>
         </tr>
 }

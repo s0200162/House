@@ -25,21 +25,21 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (Location location in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => location.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Place)
+                @Html.DisplayFor(modelItem => location.Place)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Adress)
+                @Html.DisplayFor(modelItem => location.Adress)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.LocationID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LocationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LocationID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@location.LocationID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@location.LocationID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@location.LocationID">Delete</a>
             </td>
         </tr>
 }
