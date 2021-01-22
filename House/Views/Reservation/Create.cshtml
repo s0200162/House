@@ -1,4 +1,4 @@
-﻿@model House.Models.Reservation
+﻿@model House.ViewModels.CreateReservationViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -6,39 +6,60 @@
 
 <h1>Create</h1>
 
-<h4>Reservation</h4>
+<h2>Reservation</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+            <label asp-for="Reservation.CustomerID" class="control-label"></label>
+            <select asp-for="Reservation.CustomerID" class ="form-control" asp-items="ViewBag.CustomerID"></select>
+        </div>*@
             <div class="form-group">
-                <label asp-for="CustomerID" class="control-label"></label>
-                <select asp-for="CustomerID" class ="form-control" asp-items="ViewBag.CustomerID"></select>
+                <label asp-for="SelectedLocation" class="control-label">Locatie</label>
+                <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
+                    <option>Please select</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="RoomID" class="control-label"></label>
-                <select asp-for="RoomID" class ="form-control" asp-items="ViewBag.RoomID"></select>
+                <label asp-for="SelectedRoom" class="control-label"></label>
+                <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
+            </div>
+            @*<div>
+            @Html.LabelFor(x => x.SelectedLocation)
+            @Html.DropDownListFor(x => x.SelectedLocation, Model.LocationList, "Please select")
+            @Html.ValidationMessageFor(x => x.SelectedLocation)
+        </div>
+        <div>
+            @Html.LabelFor(x => x.SelectedRoom)
+            @Html.DropDownListFor(x => x.SelectedRoom, Model.RoomList, "")
+            @Html.ValidationMessageFor(x => x.SelectedRoom)
+        </div>*@
+            
+            <div class="form-group">
+                <label asp-for="Reservation.Date" class="control-label"></label>
+                <input asp-for="Reservation.Date" class="form-control date-picker" />
+
+                <span asp-validation-for="Reservation.Date" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="Reservation.BeginTime" class="control-label"></label>
+                <input asp-for="Reservation.BeginTime" class="form-control" />
+                <span asp-validation-for="Reservation.BeginTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+                <label asp-for="Reservation.EndTime" class="control-label"></label>
+                <input asp-for="Reservation.EndTime" class="form-control" />
+                <span asp-validation-for="Reservation.EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BeginTime" class="control-label"></label>
-                <input asp-for="BeginTime" class="form-control" />
-                <span asp-validation-for="BeginTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndTime" class="control-label"></label>
-                <input asp-for="EndTime" class="form-control" />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="Reservation.Price" class="control-label"></label>
+                <input asp-for="Reservation.Price" class="form-control" />
+                <span asp-validation-for="Reservation.Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -50,6 +71,42 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<!-- JS includes -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+	var roomUrl = '@Url.Action("FetchRooms")';
+    var rooms = $('#SelectedRoom');
+    $('#SelectedLocation').change(function () {
+        rooms.empty();
+        $.getJSON(roomUrl, { ID: $(this).val() }, function(data) {
+            if (!data) {
+                return;
+            }
+            rooms.append($('<option></option>').val('').text('Please select'));
+            $.each(data, function (create, item) {
+                rooms.append('<option value="' + item.val + '">' + item.text + '</option>');
+            });
+        })
+    })
+</script>
+
+<script type="text/javascript">
+
+    $('.date-picker').datepicker({
+        format: 'dd/mm/yy',
+        startView: '1'
+
+    });
+
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
