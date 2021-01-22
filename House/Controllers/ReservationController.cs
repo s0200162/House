@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using House.Data;
+using House.Models;
+using House.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using House.Data;
-using House.Models;
-using House.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace House.Controllers
 {
@@ -82,6 +82,29 @@ namespace House.Controllers
             return Json(data);
         }
 
+        [HttpGet]
+        public JsonResult FetchHours(int ID, DateTime Date)
+        {
+            List<Reservation> reservations = new List<Reservation>();
+            reservations = (List<Reservation>)_context.Reservation.ToList()
+                .Where(x => x.Date == Date)
+                .Where(x => x.RoomID == ID)
+                .Select(x => new { Begin = x.BeginTime });
+
+            List<Hour> hours = new List<Hour>();
+            hours = Repository.fetchHours();
+
+            foreach (Reservation item in reservations)
+            {
+                DateTime BeginSwitch;
+                BeginSwitch = item.BeginTime;
+            }
+
+            var data = Repository.fetchHours()
+                .Select(x => new { Value = x.HourID, Text = x.Period });
+            return Json(data);
+        }
+
         private void ConfigureViewModel (CreateReservationViewModel model)
         {
             model.Reservation = new Reservation();
@@ -96,6 +119,15 @@ namespace House.Controllers
             {
                 model.RoomList = new SelectList(Enumerable.Empty<SelectListItem>());
             }
+            if (model.SelectedRoom.HasValue && model.SelectedDate.HasValue)
+            {
+                List<Hour> hours = Repository.fetchHours();
+                model.HourList = new SelectList(hours, "HourID", "Period");
+            } else
+            {
+                model.HourList = new SelectList(Enumerable.Empty<SelectListItem>());
+            }
+            
         }
 
 
