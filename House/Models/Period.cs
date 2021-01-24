@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace House.Models
 {
-    public class Hour
+    public class Period
     {
-        public int HourID { get; set; }
-        public string Period { get; set; }
+        public int PeriodID { get; set; }
+        public string Hour { get; set; }
     }
 }

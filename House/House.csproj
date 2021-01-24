@@ -10,6 +10,8 @@
     <Compile Remove="Migrations\20201219074259_LinkCustomerCustomUser.Designer.cs" />
     <Compile Remove="Migrations\20201219092725_DeleteEmailAdminFromCustomer.cs" />
     <Compile Remove="Migrations\20201219092725_DeleteEmailAdminFromCustomer.Designer.cs" />
+    <Compile Remove="Migrations\20210123185614_Period.cs" />
+    <Compile Remove="Migrations\20210123185614_Period.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

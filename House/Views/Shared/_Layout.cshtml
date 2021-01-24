@@ -8,28 +8,105 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
+    <style>
+        body {background-color: #5CDB95;}
+        navbar {background-color: #EDF5E1;}
+        a {color: #05386B;}
+        p {color: #EDF5E1;}
+        button {
+            background-color: #05386B;
+            color: #EDF5E1;
+            border-radius: 14px;
+        }
+    </style>
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">House</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="background-color: #EDF5E1">
+            <a href="/" class="navbar-brand">
+                <!-- Logo Image -->
+                <img src="https://res.cloudinary.com/mhmd/image/upload/v1557368579/logo_iqjuay.png" width="45" alt="" class="d-inline-block align-middle mr-2">
+                <!-- Logo Text -->
+                <span class="text-uppercase font-weight-bold">MedHouse</span>
+            </a>
+
+            @if (this.User.Identity.IsAuthenticated)
+            {
+                if (this.User.IsInRole("Admin"))
+                {
+                    <div class="container">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                            <partial name="_LoginPartial" />
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Location" asp-action="Index">Beheer Locaties</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Room" asp-action="Index">Beheer Kamers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Beheer Gebruikers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Beheer Reservaties</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                <div class="container">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <partial name="_LoginPartial" />
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Mijn Reservaties</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Mijn Facturen</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Create">Beheer Reservaties</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+                }
+            }
+            else
+            {
+                <div class="container">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <partial name="_LoginPartial" />
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Missie">Missie</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Faq">Veelgestelde Vragen</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+
         </nav>
     </header>
     <div class="container">

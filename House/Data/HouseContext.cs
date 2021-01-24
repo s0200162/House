@@ -21,6 +21,7 @@ namespace House.Data
         public DbSet<Profession> Profession { get; set; }
         public DbSet<Location> Location { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
+        public DbSet<Period> Period { get; set; }
 
 
 
@@ -48,9 +49,9 @@ namespace House.Data
 
             modelBuilder.Entity<Reservation>().ToTable("Reservation");
             modelBuilder.Entity<Reservation>().Property(p => p.CustomerID).IsRequired();
+            modelBuilder.Entity<Reservation>().Property(p => p.RoomID).IsRequired();
             modelBuilder.Entity<Reservation>().Property(p => p.Date).IsRequired();
-            modelBuilder.Entity<Reservation>().Property(p => p.BeginTime).IsRequired();
-            modelBuilder.Entity<Reservation>().Property(p => p.EndTime).IsRequired();
+            modelBuilder.Entity<Reservation>().Property(p => p.PeriodID).IsRequired();
 
             modelBuilder.Entity<Profession>().ToTable("Profession");
             modelBuilder.Entity<Profession>().Property(p => p.Description).IsRequired();
@@ -63,6 +64,9 @@ namespace House.Data
 
             modelBuilder.Entity<Invoice>().ToTable("Invoice");
             modelBuilder.Entity<Invoice>().Property(p => p.Date).IsRequired();
+
+            modelBuilder.Entity<Period>().ToTable("Period");
+            modelBuilder.Entity<Period>().Property(p => p.Hour).IsRequired();
 
         }
     }

@@ -14,9 +14,9 @@ namespace House.ViewModels
         public int? SelectedLocation { get; set; }
         public int? SelectedRoom { get; set; }
         public DateTime? SelectedDate { get; set; }
-        public int? SelectedHour { get; set; }
+        public int? SelectedPeriod { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList RoomList { get; set; }
-        public SelectList HourList { get; set; }
+        public SelectList PeriodList { get; set; }
     }
 }

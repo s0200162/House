@@ -13,8 +13,8 @@ namespace House.Models
         public int RoomID { get; set; }
         public Room room { get; set; }
         public DateTime Date { get; set; }
-        public DateTime BeginTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public int PeriodID { get; set; }
+        public Period period { get; set; }
         public double Price { get; set; }
     }
 }

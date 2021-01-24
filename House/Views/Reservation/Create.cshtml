@@ -16,60 +16,36 @@
             <label asp-for="Reservation.CustomerID" class="control-label"></label>
             <select asp-for="Reservation.CustomerID" class ="form-control" asp-items="ViewBag.CustomerID"></select>
         </div>*@
-            <div class="form-group">
-                <label asp-for="SelectedLocation" class="control-label">Locatie</label>
-                <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
-                    <option>Please select</option>
-                </select>
+        <div class="form-group">
+            <label asp-for="SelectedLocation" class="control-label">Locatie</label>
+            <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
+                <option>Please select</option>
+            </select>
             </div>
-            <div class="form-group">
-                <label asp-for="SelectedRoom" class="control-label"></label>
-                <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
-            </div>
-            @*<div>
-            @Html.LabelFor(x => x.SelectedLocation)
-            @Html.DropDownListFor(x => x.SelectedLocation, Model.LocationList, "Please select")
-            @Html.ValidationMessageFor(x => x.SelectedLocation)
+
+        <div class="form-group">
+            <label asp-for="SelectedRoom" class="control-label"></label>
+            <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
         </div>
-        <div>
-            @Html.LabelFor(x => x.SelectedRoom)
-            @Html.DropDownListFor(x => x.SelectedRoom, Model.RoomList, "")
-            @Html.ValidationMessageFor(x => x.SelectedRoom)
-        </div>*@
 
             <div class="form-group">
                 <label asp-for="SelectedDate" class="control-label"></label>
                 <input asp-for="SelectedDate" class="form-control date-picker" />
-
                 <span asp-validation-for="Reservation.Date" class="text-danger"></span>
             </div>
 
-            <div>
-                @Html.LabelFor(x => x.SelectedHour)
-                @Html.DropDownListFor(x => x.SelectedHour, Model.HourList, "")
-                @Html.ValidationMessageFor(x => x.SelectedHour)
+            <div class="form-group">
+                <label asp-for="SelectedPeriod" class="control-label"></label>
+                <select asp-for="SelectedPeriod" class="form-control" asp-items="Model.PeriodList"></select>
             </div>
 
-
-            @*<div class="form-group">
-            <label asp-for="Reservation.BeginTime" class="control-label"></label>
-            <input asp-for="Reservation.BeginTime" class="form-control" />
-            <span asp-validation-for="Reservation.BeginTime" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.EndTime" class="control-label"></label>
-            <input asp-for="Reservation.EndTime" class="form-control" />
-            <span asp-validation-for="Reservation.EndTime" class="text-danger"></span>
-        </div>*@
             <div class="form-group">
                 <label asp-for="Reservation.Price" class="control-label"></label>
-                <input asp-for="Reservation.Price" class="form-control" />
-                <span asp-validation-for="Reservation.Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" id="submit" />
             </div>
-        </form>
+</form>
     </div>
 </div>
 
@@ -88,58 +64,71 @@
 
 <script type="text/javascript">
     var roomUrl = '@Url.Action("FetchRooms")';
-    var hourUrl = '@Url.Action("FetchHours")'
+    var periodUrl = '@Url.Action("FetchPeriods")'
     var rooms = $('#SelectedRoom');
     var date = $('#SelectedDate');
-    var hours = $('#SelectedHour');
+    var periods = $('#SelectedPeriod');
+    var price = $('#Price')
     $('#SelectedLocation').change(function () {
         rooms.empty();
-        hours.empty();
+        periods.empty();
         $.getJSON(roomUrl, { ID: $(this).val() }, function(data) {
             if (!data) {
                 return;
             }
             rooms.append($('<option></option>').val('').text('Please select'));
-            $.each(data, function (create, item) {
+            $.each(data, function (index, item) {
                 rooms.append('<option value="' + item.val + '">' + item.text + '</option>');
             });
         })
     })
     $('#SelectedRoom').change(function () {
-        hours.empty();
-        $.getJSON(hourUrl, { ID: $(this).val(), Date: $(this).val() }, function (data) {
+        periods.empty();
+        $.getJSON(periodUrl, { ID: $(this).val(), Date: $(this).val() }, function (data) {
             if (!data) {
                 return;
             }
-            hours.append($('<option></option>').val('').text('Please select'));
-            $.each(data, function (create, item) {
-                hours.append('<option value="' + item.val + '">' + item.text + '</option>');
+            periods.append($('<option></option>').val('').text('Please select'));
+            $.each(data, function (index, item) {
+                periods.append('<option value="' + item.val + '">' + item.text + '</option>');
             });
         });
     })
     $('#SelectedDate').change(function () {
-        hours.empty();
-        $.getJSON(hourUrl, { ID: $(this).val(), Date: $(this).val() }, function (data) {
+        periods.empty();
+        $.getJSON(periodUrl, { ID: $(this).val(), Date: $(this).val() }, function (data) {
             if (!data) {
                 return;
             }
-            hours.append($('<option></option>').val('').text('Please select'));
+            periods.append($('<option></option>').val('').text('Please select'));
             $.each(data, function (create, item) {
-                hours.append('<option value="' + item.val + '">' + item.text + '</option>');
+                periods.append('<option value="' + item.val + '">' + item.text + '</option>');
             });
         });
-    })	
+    })
 </script>
 
 <script type="text/javascript">
+    $('.date-picker').datepicker();
+</script>
 
-    $('.date-picker').datepicker({
-        format: 'dd/mm/yy',
-        startView: '1'
+@*<script>
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: "Reservation/Create", // Controller/View
+                    data: '{"RoomID":"' $("#SelectedRoom").val() + '",
+                            "PeriodID":"' $("#SelectedPeriod").val() + '"
+                    }'
 
+                });
+
+        });
     });
 
-</script>
+</script>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

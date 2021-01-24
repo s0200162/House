@@ -21,12 +21,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.BeginTime)
+                @Html.DisplayNameFor(model => model.period)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
@@ -45,12 +44,11 @@
             <td>
                 @Html.DisplayFor(modelItem => reservation.Date)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => reservation.BeginTime)
+                @Html.DisplayFor(modelItem => reservation.period.Hour)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => reservation.EndTime)
-            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => reservation.Price)
             </td>
