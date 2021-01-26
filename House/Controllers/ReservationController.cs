@@ -29,6 +29,27 @@ namespace House.Controllers
             return View(await houseContext.ToListAsync());
         }
 
+        // GET: Reservation/Own
+        public async Task<IActionResult> Own()
+        {
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            List<Customer> customers = _context.Customer.ToList();
+            Customer currentCustomer = new Customer();
+            foreach (Customer customer in customers)
+            {
+                if (customer.UserID == currentUserID)
+                {
+                    currentCustomer = customer;
+                }
+            }
+
+            var houseContext = _context.Reservation.Include(r => r.customer).Include(r => r.room).Include(r => r.period)
+                .Where(x => x.CustomerID == currentCustomer.CustomerID);
+            return View(await houseContext.ToListAsync());
+        }
+
         // GET: Reservation/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -88,7 +109,7 @@ namespace House.Controllers
             {
                 _context.Add(viewModel.Reservation);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Own));
             }
             viewModel.LocationList = new SelectList(_context.Location, "LocationID", "NameAndPlace");
             viewModel.RoomList = new SelectList(_context.Room, "RoomID", "Description");
