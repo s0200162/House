@@ -6,12 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201210201623_InitialCreateHouse.cs" />
+    <Compile Remove="Migrations\20201210201623_InitialCreateHouse.Designer.cs" />
     <Compile Remove="Migrations\20201219074259_LinkCustomerCustomUser.cs" />
     <Compile Remove="Migrations\20201219074259_LinkCustomerCustomUser.Designer.cs" />
     <Compile Remove="Migrations\20201219092725_DeleteEmailAdminFromCustomer.cs" />
     <Compile Remove="Migrations\20201219092725_DeleteEmailAdminFromCustomer.Designer.cs" />
+    <Compile Remove="Migrations\20201220191047_CustomUserNav.cs" />
+    <Compile Remove="Migrations\20201220191047_CustomUserNav.Designer.cs" />
+    <Compile Remove="Migrations\20201223204404_FixForeignKey.cs" />
+    <Compile Remove="Migrations\20201223204404_FixForeignKey.Designer.cs" />
     <Compile Remove="Migrations\20210123185614_Period.cs" />
     <Compile Remove="Migrations\20210123185614_Period.Designer.cs" />
+    <Compile Remove="Migrations\20210123190906_Period.cs" />
+    <Compile Remove="Migrations\20210123190906_Period.Designer.cs" />
+    <Compile Remove="Migrations\20210126191055_Period.cs" />
+    <Compile Remove="Migrations\20210126191055_Period.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -65,6 +65,8 @@ namespace House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateReservationViewModel viewModel)
         {
+            viewModel.Reservation = new Reservation();
+
             ClaimsPrincipal currentUser = this.User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -80,6 +82,8 @@ namespace House.Controllers
 
             viewModel.Reservation.CustomerID = currentCustomer.CustomerID;
             viewModel.Reservation.RoomID = viewModel.SelectedRoom ?? -1;
+            viewModel.Reservation.Date = viewModel.SelectedDate ?? default;
+            viewModel.Reservation.PeriodID = viewModel.SelectedPeriod ?? -1;
             if (ModelState.IsValid)
             {
                 _context.Add(viewModel.Reservation);
@@ -98,16 +102,15 @@ namespace House.Controllers
             var data = _context.Room.ToList()
                 .Where(x => x.LocationID == ID)
                 .Select(x => new { Value = x.RoomID, Text = x.Description });
-            return Json(data);
+            return Json(data); 
         }
 
         [HttpGet]
-        public JsonResult FetchPeriods(int ID, DateTime Date)
+        public JsonResult FetchPeriods(int ID, DateTime Date, CreateReservationViewModel viewModel)
         {
-            List<Reservation> reservations = new List<Reservation>();
-            reservations = (List<Reservation>)_context.Reservation.ToList();
-                //.Where(x => x.Date == Date)
-                //.Where(x => x.RoomID == ID);
+            var reservations = _context.Reservation.ToList()
+                .Where(x => x.Date.Date == Date.Date)
+                .Where(x => x.RoomID == ID);
 
             List<Period> periods = _context.Period.ToList();
 
@@ -118,33 +121,34 @@ namespace House.Controllers
             }
 
             var data = periods
-                .Select(x => new { Value = x.PeriodID, Text = x.Hour });
+                .Select(x => 
+                new { Value = x.PeriodID, Text = x.Hour });
             return Json(data);
         }
 
-        private void ConfigureViewModel (CreateReservationViewModel model)
+        private void ConfigureViewModel (CreateReservationViewModel viewModel)
         {
-            model.Reservation = new Reservation();
-            model.SelectedDate = DateTime.Now;
+            viewModel.Reservation = new Reservation();
+            viewModel.SelectedDate = DateTime.Now;
             List<Location> locations = _context.Location.ToList();
-            model.LocationList = new SelectList(locations, "LocationID", "NameAndPlace");
-            if (model.SelectedLocation.HasValue)
+            viewModel.LocationList = new SelectList(locations, "LocationID", "NameAndPlace");
+            if (viewModel.SelectedLocation.HasValue)
             {
                 IEnumerable<Room> rooms = _context.Room.ToList()
-                    .Where(x => x.LocationID == model.SelectedLocation.Value);
-                model.RoomList = new SelectList(rooms, "RoomID", "Description");
+                    .Where(x => x.LocationID == viewModel.SelectedLocation.Value);
+                viewModel.RoomList = new SelectList(rooms, "RoomID", "Description");
             } else
             {
-                model.RoomList = new SelectList(Enumerable.Empty<SelectListItem>());
+                viewModel.RoomList = new SelectList(Enumerable.Empty<SelectListItem>());
             }
-            if (model.SelectedRoom.HasValue && model.SelectedDate.HasValue)
+            if (viewModel.SelectedRoom.HasValue && viewModel.SelectedDate.HasValue)
             {
                 List<Period> hours = _context.Period.ToList();
-                model.PeriodList = new SelectList(hours, "HourID", "Period");
+                viewModel.PeriodList = new SelectList(hours, "HourID", "Period");
             }
             else
             {
-                model.PeriodList = new SelectList(Enumerable.Empty<SelectListItem>());
+                viewModel.PeriodList = new SelectList(Enumerable.Empty<SelectListItem>());
             }
 
         }

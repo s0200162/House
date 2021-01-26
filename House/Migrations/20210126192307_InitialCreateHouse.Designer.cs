@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace House.Migrations
 {
     [DbContext(typeof(HouseContext))]
-    [Migration("20201223204404_FixForeignKey")]
-    partial class FixForeignKey
+    [Migration("20210126192307_InitialCreateHouse")]
+    partial class InitialCreateHouse
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,11 +161,28 @@ namespace House.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Place")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LocationID");
 
                     b.ToTable("Location");
+                });
+
+            modelBuilder.Entity("House.Models.Period", b =>
+                {
+                    b.Property<int>("PeriodID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Hour")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PeriodID");
+
+                    b.ToTable("Period");
                 });
 
             modelBuilder.Entity("House.Models.Profession", b =>
@@ -191,17 +208,14 @@ namespace House.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("BeginTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("PeriodID")
+                        .HasColumnType("int");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -212,6 +226,8 @@ namespace House.Migrations
                     b.HasKey("ReservationID");
 
                     b.HasIndex("CustomerID");
+
+                    b.HasIndex("PeriodID");
 
                     b.HasIndex("RoomID");
 
@@ -404,6 +420,12 @@ namespace House.Migrations
                     b.HasOne("House.Models.Customer", "customer")
                         .WithMany("Reservations")
                         .HasForeignKey("CustomerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("House.Models.Period", "period")
+                        .WithMany()
+                        .HasForeignKey("PeriodID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

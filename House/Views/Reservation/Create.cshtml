@@ -16,23 +16,29 @@
             <label asp-for="Reservation.CustomerID" class="control-label"></label>
             <select asp-for="Reservation.CustomerID" class ="form-control" asp-items="ViewBag.CustomerID"></select>
         </div>*@
-        <div class="form-group">
-            <label asp-for="SelectedLocation" class="control-label">Locatie</label>
-            <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
-                <option>Please select</option>
-            </select>
+            <div class="form-group">
+                <label asp-for="SelectedLocation" class="control-label">Locatie</label>
+                <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
+                    <option>Please select</option>
+                </select>
             </div>
-
-        <div class="form-group">
-            <label asp-for="SelectedRoom" class="control-label"></label>
-            <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
-        </div>
 
             <div class="form-group">
-                <label asp-for="SelectedDate" class="control-label"></label>
-                <input asp-for="SelectedDate" class="form-control date-picker" />
-                <span asp-validation-for="Reservation.Date" class="text-danger"></span>
+                <label asp-for="SelectedRoom" class="control-label"></label>
+                <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
             </div>
+
+            <div class="form-group">
+                <label asp-for="SelectedDate" asp-format="{0:d}" class="control-label date-picker"></label>
+                <input asp-for="SelectedDate" class="form-control date-picker" />
+                @*<span asp-validation-for="Reservation.Date" class="text-danger"></span>*@
+            </div>
+
+            @*<div class="form-group">
+                @Html.LabelFor(m => m.SelectedDate)
+                @Html.TextBoxFor(m => m.SelectedDate, "{0:d}", new { @class = "form-control date-picker" })
+                @Html.ValidationMessageFor(m => m.SelectedDate)
+            </div>*@
 
             <div class="form-group">
                 <label asp-for="SelectedPeriod" class="control-label"></label>
@@ -45,7 +51,7 @@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" id="submit" />
             </div>
-</form>
+        </form>
     </div>
 </div>
 
@@ -78,31 +84,31 @@
             }
             rooms.append($('<option></option>').val('').text('Please select'));
             $.each(data, function (index, item) {
-                rooms.append('<option value="' + item.val + '">' + item.text + '</option>');
+                rooms.append('<option value="' + item.value + '">' + item.text + '</option>');
             });
         })
     })
     $('#SelectedRoom').change(function () {
         periods.empty();
-        $.getJSON(periodUrl, { ID: $(this).val(), Date: $(this).val() }, function (data) {
-            if (!data) {
-                return;
-            }
-            periods.append($('<option></option>').val('').text('Please select'));
-            $.each(data, function (index, item) {
-                periods.append('<option value="' + item.val + '">' + item.text + '</option>');
-            });
-        });
-    })
-    $('#SelectedDate').change(function () {
-        periods.empty();
-        $.getJSON(periodUrl, { ID: $(this).val(), Date: $(this).val() }, function (data) {
+        $.getJSON(periodUrl, { ID: $(this).val(), Date: $(SelectedDate).val() }, function (data) {
             if (!data) {
                 return;
             }
             periods.append($('<option></option>').val('').text('Please select'));
             $.each(data, function (create, item) {
-                periods.append('<option value="' + item.val + '">' + item.text + '</option>');
+                periods.append('<option value="' + item.value + '">' + item.text + '</option>');
+            });
+        });
+    })
+    $('#SelectedDate').change(function () {
+        periods.empty();
+        $.getJSON(periodUrl, { Date: $(this).val(), ID: $(SelectedRoom).val() }, function (data) {
+            if (!data) {
+                return;
+            }
+            periods.append($('<option></option>').val('').text('Please select'));
+            $.each(data, function (create, item) {
+                periods.append('<option value="' + item.value + '">' + item.text + '</option>');
             });
         });
     })
@@ -126,9 +132,9 @@
                 });
 
         });
-    });
+    });*@
 
-</script>*@
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
