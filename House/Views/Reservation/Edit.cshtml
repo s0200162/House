@@ -1,4 +1,4 @@
-﻿@model House.Models.Reservation
+﻿@model House.ViewModels.EditReservationViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,46 +6,97 @@
 
 <h1>Edit</h1>
 
-<h4>Reservation</h4>
+<h2>Reservation</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ReservationID" />
+            <input type="hidden" asp-for="Reservation.ReservationID" />
+            @*<div class="form-group">
+            <label asp-for="CustomerID" class="control-label"></label>
+            <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
+            <span asp-validation-for="CustomerID" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
-                <label asp-for="CustomerID" class="control-label"></label>
-                <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
-                <span asp-validation-for="CustomerID" class="text-danger"></span>
+                <label asp-for="SelectedLocation" class="control-label">Locatie</label>
+                <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
+                    <option>Please select</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="RoomID" class="control-label"></label>
-                <select asp-for="RoomID" class="form-control" asp-items="ViewBag.RoomID"></select>
-                <span asp-validation-for="RoomID" class="text-danger"></span>
+                <label asp-for="SelectedRoom" class="control-label"></label>
+                <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
+                @*<span asp-validation-for="RoomID" class="text-danger"></span>*@
             </div>
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+                <label asp-for="SelectedDate" class="control-label"></label>
+                <input asp-for="SelectedDate" class="form-control" />
+                @*<span asp-validation-for="Date" class="text-danger"></span>*@
             </div>
 
             <div class="form-group">
-                <label asp-for="PeriodID" class="control-label"></label>
-                <select asp-for="PeriodID" class="form-control" asp-items="ViewBag.PeriodID"></select>
-                <span asp-validation-for="PeriodID" class="text-danger"></span>
+                <label asp-for="SelectedPeriod" class="control-label"></label>
+                <select asp-for="SelectedPeriod" class="form-control" asp-items="Model.PeriodList"></select>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+            @*<div class="form-group">
+            <label asp-for="Price" class="control-label"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+
+<script type="text/javascript">
+    var roomUrl = '@Url.Action("FetchRooms")';
+    var periodUrl = '@Url.Action("FetchPeriods")'
+    var rooms = $('#SelectedRoom');
+    var date = $('#SelectedDate');
+    var periods = $('#SelectedPeriod');
+    var price = $('#Price')
+    $('#SelectedLocation').change(function () {
+        rooms.empty();
+        periods.empty();
+        $.getJSON(roomUrl, { ID: $(this).val() }, function(data) {
+            if (!data) {
+                return;
+            }
+            rooms.append($('<option></option>').val('').text('Please select'));
+            $.each(data, function (edit, item) {
+                rooms.append('<option value="' + item.value + '">' + item.text + '</option>');
+            });
+        })
+    })
+    $('#SelectedRoom').change(function () {
+        periods.empty();
+        $.getJSON(periodUrl, { ID: $(this).val(), Date: $(SelectedDate).val() }, function (data) {
+            if (!data) {
+                return;
+            }
+            periods.append($('<option></option>').val('').text('Please select'));
+            $.each(data, function (edit, item) {
+                periods.append('<option value="' + item.value + '">' + item.text + '</option>');
+            });
+        });
+    })
+    $('#SelectedDate').change(function () {
+        periods.empty();
+        $.getJSON(periodUrl, { Date: $(this).val(), ID: $(SelectedRoom).val() }, function (data) {
+            if (!data) {
+                return;
+            }
+            periods.append($('<option></option>').val('').text('Please select'));
+            $.each(data, function (edit, item) {
+                periods.append('<option value="' + item.value + '">' + item.text + '</option>');
+            });
+        });
+    })
+</script>
 
 <div>
     <a asp-action="Index">Back to List</a>

@@ -16,5 +16,6 @@ namespace House.Models
         public int PeriodID { get; set; }
         public Period period { get; set; }
         public double Price { get; set; }
+        public List<ReservationInvoice> ReservationInvoices { get; set; }
     }
 }

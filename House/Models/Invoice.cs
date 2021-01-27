@@ -13,5 +13,6 @@ namespace House.Models
         public DateTime Date { get; set; }
         public DateTime EndDate { get; set; }
         public bool Paid { get; set; }
+        public List<ReservationInvoice> ReservationInvoices { get; set; }
     }
 }

@@ -164,7 +164,7 @@ namespace House.Controllers
             }
             if (viewModel.SelectedRoom.HasValue && viewModel.SelectedDate.HasValue)
             {
-                List<Period> hours = _context.Period.ToList();
+                IEnumerable<Period> hours = _context.Period.ToList();
                 viewModel.PeriodList = new SelectList(hours, "HourID", "Period");
             }
             else
@@ -176,7 +176,7 @@ namespace House.Controllers
 
 
         // GET: Reservation/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, EditReservationViewModel viewModel)
         {
             if (id == null)
             {
@@ -188,10 +188,43 @@ namespace House.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
-            ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
-            ViewData["PeriodID"] = new SelectList(_context.Period, "PeriodID", "Hour", reservation.PeriodID);
-            return View(reservation);
+
+            viewModel.Reservation = reservation;
+
+            //Location location = await _context.Location.FindAsync(reservation.room.LocationID);
+
+            Room room = await _context.Room.FindAsync(reservation.RoomID);
+
+            viewModel.SelectedLocation = room.LocationID;
+
+            viewModel.SelectedDate = reservation.Date;
+            viewModel.SelectedRoom = reservation.RoomID;
+            viewModel.SelectedPeriod = reservation.PeriodID;
+            List<Location> locations = _context.Location.ToList();
+            viewModel.LocationList = new SelectList(locations, "LocationID", "NameAndPlace", room.LocationID);
+            if (viewModel.SelectedLocation.HasValue)
+            {
+                IEnumerable<Room> rooms = _context.Room.ToList()
+                    .Where(x => x.LocationID == viewModel.SelectedLocation.Value);
+                viewModel.RoomList = new SelectList(rooms, "RoomID", "Description", reservation.RoomID);
+            }
+            else
+            {
+                viewModel.RoomList = new SelectList(Enumerable.Empty<SelectListItem>());
+            }
+            if (viewModel.SelectedRoom.HasValue && viewModel.SelectedDate.HasValue)
+            {
+                IEnumerable<Period> hours = _context.Period.ToList();
+                viewModel.PeriodList = new SelectList(hours, "PeriodID", "Hour", reservation.PeriodID);
+            }
+            else
+            {
+                viewModel.PeriodList = new SelectList(Enumerable.Empty<SelectListItem>());
+            }
+            //ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
+            //ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
+            //ViewData["PeriodID"] = new SelectList(_context.Period, "PeriodID", "Hour", reservation.PeriodID);
+            return View(viewModel);
         }
 
         // POST: Reservation/Edit/5

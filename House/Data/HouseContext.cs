@@ -22,6 +22,7 @@ namespace House.Data
         public DbSet<Location> Location { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
         public DbSet<Period> Period { get; set; }
+        public DbSet<ReservationInvoice> ReservationInvoice { get; set; }
 
 
 
@@ -67,6 +68,8 @@ namespace House.Data
 
             modelBuilder.Entity<Period>().ToTable("Period");
             modelBuilder.Entity<Period>().Property(p => p.Hour).IsRequired();
+
+            modelBuilder.Entity<ReservationInvoice>().ToTable("ReservationInvoice");
 
         }
     }

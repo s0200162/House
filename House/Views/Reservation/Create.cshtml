@@ -1,7 +1,7 @@
 ﻿@model House.ViewModels.CreateReservationViewModel
 
 @{
-    ViewData["Title"] = "Create";
+//ViewData["Title"] = "Create";
 }
 
 <h1>Create</h1>
@@ -29,8 +29,8 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="SelectedDate" asp-format="{0:d}" class="control-label date-picker"></label>
-                <input asp-for="SelectedDate" class="form-control date-picker" />
+                <label asp-for="SelectedDate" class="control-label"></label>
+                <input asp-for="SelectedDate" class="form-control" />
                 @*<span asp-validation-for="Reservation.Date" class="text-danger"></span>*@
             </div>
 
@@ -112,28 +112,6 @@
             });
         });
     })
-</script>
-
-<script type="text/javascript">
-    $('.date-picker').datepicker();
-</script>
-
-@*<script>
-    $(document).ready(function () {
-        $("#submit").click(function () {
-            $.ajax(
-                {
-                    type: "POST", //HTTP POST Method
-                    url: "Reservation/Create", // Controller/View
-                    data: '{"RoomID":"' $("#SelectedRoom").val() + '",
-                            "PeriodID":"' $("#SelectedPeriod").val() + '"
-                    }'
-
-                });
-
-        });
-    });*@
-
 </script>
 
 @section Scripts {
