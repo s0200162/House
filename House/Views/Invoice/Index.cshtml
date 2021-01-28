@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<House.Models.Invoice>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Overzicht Facturen";
 }
 
-<h1>Index</h1>
+<h1>Overzicht Facturen</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,16 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.customer.Fullname)
+                Naam
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                Datum Aangemaakt
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndDate)
+                Te betalen voor
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Paid)
+                Betaald
+            </th>
+            <th>
+                Totaal
             </th>
             <th></th>
         </tr>
@@ -41,6 +44,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Paid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.InvoiceID">Edit</a> |

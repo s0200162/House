@@ -4,14 +4,16 @@ using House.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace House.Migrations
 {
     [DbContext(typeof(HouseContext))]
-    partial class HouseContextModelSnapshot : ModelSnapshot
+    [Migration("20210128130119_Invoice-TotalPrice")]
+    partial class InvoiceTotalPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,52 +1,39 @@
 ﻿@model House.ViewModels.CreateReservationViewModel
 
 @{
-//ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h2>Reservation</h2>
+<h1>Nieuwe Reservatie</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-            <label asp-for="Reservation.CustomerID" class="control-label"></label>
-            <select asp-for="Reservation.CustomerID" class ="form-control" asp-items="ViewBag.CustomerID"></select>
-        </div>*@
             <div class="form-group">
                 <label asp-for="SelectedLocation" class="control-label">Locatie</label>
                 <select asp-for="SelectedLocation" class="form-control" asp-items="Model.LocationList">
-                    <option>Please select</option>
+                    <option value="">Please select</option>
                 </select>
+                <span asp-validation-for="SelectedLocation" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="SelectedRoom" class="control-label"></label>
                 <select asp-for="SelectedRoom" class="form-control" asp-items="Model.RoomList"></select>
+                <span asp-validation-for="SelectedRoom" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="SelectedDate" class="control-label"></label>
                 <input asp-for="SelectedDate" class="form-control" />
-                @*<span asp-validation-for="Reservation.Date" class="text-danger"></span>*@
+                <span asp-validation-for="SelectedDate" class="text-danger"></span>
             </div>
-
-            @*<div class="form-group">
-                @Html.LabelFor(m => m.SelectedDate)
-                @Html.TextBoxFor(m => m.SelectedDate, "{0:d}", new { @class = "form-control date-picker" })
-                @Html.ValidationMessageFor(m => m.SelectedDate)
-            </div>*@
 
             <div class="form-group">
                 <label asp-for="SelectedPeriod" class="control-label"></label>
                 <select asp-for="SelectedPeriod" class="form-control" asp-items="Model.PeriodList"></select>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Reservation.Price" class="control-label"></label>
+                <span asp-validation-for="SelectedPeriod" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" id="submit" />
@@ -56,7 +43,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Own">Back to List</a>
 </div>
 
 <!-- JS includes -->
@@ -69,6 +56,9 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
 
 <script type="text/javascript">
+
+    //bron cascading dropdownlist: https://dotnetfiddle.net/1bPZym
+
     var roomUrl = '@Url.Action("FetchRooms")';
     var periodUrl = '@Url.Action("FetchPeriods")'
     var rooms = $('#SelectedRoom');

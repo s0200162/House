@@ -16,6 +16,7 @@ namespace House.Models
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
         public bool Paid { get; set; }
+        public double TotalPrice { get; set; }
         public List<ReservationInvoice> ReservationInvoices { get; set; }
     }
 }

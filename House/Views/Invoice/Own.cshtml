@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.Paid)
             </td>
             <td>
-                Totale prijs???
+                @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.InvoiceID">Detail</a>

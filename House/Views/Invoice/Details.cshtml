@@ -4,41 +4,53 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Detail Factuur</h1>
 
 <div>
-    <h2>Invoice</h2>
-    <hr />
 
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Invoice.InvoiceID" />
-            <div class="form-group">
-                <label asp-for="Invoice.Date" class="control-label"></label>
-                <input asp-for="Invoice.Date" class="form-control" />
-                <span asp-validation-for="Invoice.Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Invoice.EndDate" class="control-label"></label>
-                <input asp-for="Invoice.EndDate" class="form-control" />
-                <span asp-validation-for="Invoice.EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Invoice.Paid" /> @Html.DisplayNameFor(model => model.Invoice.Paid)
-                </label>
-            </div>
-            <div class="form-group">
-                <select asp-for="Invoice.ReservationInvoices" asp-items="Model.ReservationList"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        <h4>Profession</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                Klantnaam
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Invoice.customer.Fullname)
+            </dd>
+            <dt class="col-sm-2">
+                Datum Aangemaakt
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Invoice.Date)
+            </dd>
+            <dt class="col-sm-2">
+                Te betalen voor
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Invoice.EndDate)
+            </dd>
+            <dt class="col-sm-2">
+                Overzicht reservaties
+            </dt>
+            <dd class="col-sm-10">
+                <div class="form-group">
+                    <select asp-for="Invoice.ReservationInvoices" asp-items="Model.ReservationList"></select>
+                </div>
+            </dd>
+            <dt class="col-sm-2">
+                betaald
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Invoice.Paid)
+            </dd>
+            <dt class="col-sm-2">
+                Bedrag
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Invoice.TotalPrice)
+            </dd>
+        </dl>
     </div>
-
-</div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Own">Back to List</a>
 </div>

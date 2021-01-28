@@ -61,6 +61,7 @@ namespace House.Controllers
             }
 
             Invoice invoice = await _context.Invoice
+                .Include(x => x.customer)
                 .Include(x => x.ReservationInvoices)
                 .SingleOrDefaultAsync(x => x.InvoiceID == id);
             if (invoice == null)
@@ -138,6 +139,8 @@ namespace House.Controllers
             viewModel.Invoice.Paid = false;
             viewModel.Invoice.CustomerID = viewModel.SelectedCustomer ?? -1;
 
+            double Total = 0;
+
             if (ModelState.IsValid)
             {
                 _context.Add(viewModel.Invoice);
@@ -146,12 +149,18 @@ namespace House.Controllers
                 List<ReservationInvoice> newInvoices = new List<ReservationInvoice>();
                 foreach (int reservationID in viewModel.SelectedReservations)
                 {
+                    Reservation reservation = _context.Reservation.Find(reservationID);
+                    Total = Total + reservation.Price;
                     newInvoices.Add(new ReservationInvoice
                     {
                         ReservationID = reservationID,
                         InvoiceID = viewModel.Invoice.InvoiceID
                     });
                 }
+
+                viewModel.Invoice.TotalPrice = Total;
+                _context.Update(viewModel.Invoice);
+                await _context.SaveChangesAsync();
 
                 Invoice invoice = await _context.Invoice.Include(x => x.ReservationInvoices)
                     .SingleOrDefaultAsync(x => x.InvoiceID == viewModel.Invoice.InvoiceID);
@@ -179,7 +188,7 @@ namespace House.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", invoice.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Fullname", invoice.CustomerID);
             return View(invoice);
         }
 
@@ -189,7 +198,7 @@ namespace House.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("InvoiceID,CustomerID,Date,EndDate,Paid")] Invoice invoice)
+        public async Task<IActionResult> Edit(int id, [Bind("InvoiceID,CustomerID,Date,EndDate,Paid,TotalPrice")] Invoice invoice)
         {
             if (id != invoice.InvoiceID)
             {
@@ -246,7 +255,19 @@ namespace House.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var invoice = await _context.Invoice.FindAsync(id);
+            Invoice invoice = await _context.Invoice.FindAsync(id);
+
+            List<ReservationInvoice> reservationInvoices = await _context.ReservationInvoice.ToListAsync();
+
+            foreach (ReservationInvoice resin in reservationInvoices)
+            {
+                if (resin.InvoiceID == id)
+                {
+                    _context.ReservationInvoice.Remove(resin);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             _context.Invoice.Remove(invoice);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

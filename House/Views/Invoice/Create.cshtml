@@ -4,9 +4,8 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Maak nieuwe factuur</h1>
 
-<h2>Invoice</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,44 +13,21 @@
         <form asp-action="Search" method="get">
             <div class="form-group">
                 <p>
-                    Zoek Reservaties:
-                    <label asp-for="Invoice.CustomerID" class="control-label"></label>
+                    <label asp-for="Invoice.CustomerID" class="control-label">Zoek Reservaties voor Persoon</label>
                     <select asp-for="Invoice.CustomerID" class="form-control" asp-items="Model.Customers">
                         <option>Please select</option>
                     </select>
-                    <input type="submit" value="Zoeken" class="btn btn-default" /> |
+                    <br />
+                    <input type="submit" value="Zoeken" class="btn btn-primary" />
                 </p>
             </div>
         </form>
 
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="SelectedCustomer" />
             <input type="hidden" asp-for="Invoice.CustomerID" />
-            @*<div class="form-group">
-            <label asp-for="Invoice.CustomerID" class="control-label"></label>
-            <select asp-for="Invoice.CustomerID" class="form-control" asp-items="Model.Customers">
-                <option>Please select</option>
-            </select>
-        </div>*@
-
-
-
-            @*<div class="form-group">
-            <label asp-for="Invoice.Date" class="control-label"></label>
-            <input asp-for="Invoice.Date" class="form-control" />
-            <span asp-validation-for="Invoice.Date" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Invoice.EndDate" class="control-label"></label>
-            <input asp-for="Invoice.EndDate" class="form-control" />
-            <span asp-validation-for="Invoice.EndDate" class="text-danger"></span>
-        </div>*@
-            @*<div class="form-group form-check">
-            <label class="form-check-label">
-                <input class="form-check-input" asp-for="Invoice.Paid" /> @Html.DisplayNameFor(model => model.Invoice.Paid)
-            </label>
-        </div>*@
 
             <div class="form-group">
                 <select asp-for="SelectedReservations" class="form-control" asp-items="Model.ReservationList"></select>
@@ -67,31 +43,6 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-<!-- JS includes -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
-<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script src="//ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
-
-@*<script type="text/javascript">
-    var reservationUrl = '@Url.Action("FetchReservations")';
-    var reservations = $('#SelectedReservation');
-    $('#SelectedCustomer').change(function () {
-        reservations.empty();
-        $.getJSON(reservationUrl, { ID: $(this).val() }, function(data) {
-            if (!data) {
-                return;
-            }
-            $.each(data, function (create, item) {
-                reservations.append('<option value="' + item.value + '">' + item.text + '</option>');
-            });
-        })
-    })
-</script>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

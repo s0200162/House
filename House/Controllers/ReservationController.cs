@@ -68,7 +68,33 @@ namespace House.Controllers
                 return NotFound();
             }
 
-            return View(reservation);
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (currentUser.IsInRole("Admin"))
+            {
+                return View(reservation);
+            }
+            else
+            {
+                List<Customer> customers = _context.Customer.ToList();
+                Customer currentCustomer = new Customer();
+                foreach (Customer customer in customers)
+                {
+                    if (customer.UserID == currentUserID)
+                    {
+                        currentCustomer = customer;
+                    }
+                }
+                if (currentCustomer.CustomerID == reservation.CustomerID)
+                {
+                    return View(reservation);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
         }
 
         // GET: Reservation/Create
@@ -107,11 +133,10 @@ namespace House.Controllers
             viewModel.Reservation.PeriodID = viewModel.SelectedPeriod ?? -1;
 
             Room room = _context.Room.Find(viewModel.SelectedRoom);
-            
-            viewModel.Reservation.Price = room.PriceHour * 2;
 
             if (ModelState.IsValid)
             {
+                viewModel.Reservation.Price = room.PriceHour * 2;
                 _context.Add(viewModel.Reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Own));
