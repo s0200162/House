@@ -11,5 +11,6 @@ namespace House.ViewModels
     {
         public Invoice Invoice { get; set; }
         public IEnumerable<SelectListItem> ReservationList { get; set; }
+        public List<Reservation> Reservations { get; set; }
     }
 }

@@ -7,8 +7,6 @@
 <h1>Detail Factuur</h1>
 
 <div>
-
-        <h4>Profession</h4>
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
@@ -30,14 +28,6 @@
                 @Html.DisplayFor(model => model.Invoice.EndDate)
             </dd>
             <dt class="col-sm-2">
-                Overzicht reservaties
-            </dt>
-            <dd class="col-sm-10">
-                <div class="form-group">
-                    <select asp-for="Invoice.ReservationInvoices" asp-items="Model.ReservationList"></select>
-                </div>
-            </dd>
-            <dt class="col-sm-2">
                 betaald
             </dt>
             <dd class="col-sm-10">
@@ -49,6 +39,15 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Invoice.TotalPrice)
             </dd>
+            @foreach (Reservation reservation in Model.Reservations)
+            {
+                <dt class="col-sm-2">
+                    Reservatie: 
+                </dt>
+                <dd class="col-sm-10">
+                    @reservation.ToString()
+                </dd>
+            }
         </dl>
     </div>
 <div>

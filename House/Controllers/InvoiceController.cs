@@ -69,13 +69,51 @@ namespace House.Controllers
                 return NotFound();
             }
 
+            List<ReservationInvoice> reservationInvoices = await _context.ReservationInvoice
+                .Include(x => x.reservation)
+                .ThenInclude(reservation => reservation.period)
+                .Include(x => x.reservation)
+                .ThenInclude(reservation => reservation.room)
+                .Where(x => x.InvoiceID == id).ToListAsync();
+
             DetailsInvoiceViewModel viewModel = new DetailsInvoiceViewModel();
             viewModel.Invoice = invoice;
-            List<Reservation> reservations = await _context.Reservation
-                .Include(x => x.period)
-                .Include(x => x.room)
-                .Where(x => x.CustomerID == invoice.CustomerID).ToListAsync();
-            viewModel.ReservationList = new SelectList(reservations, "ReservationID", "InvoiceView");
+            List<Reservation> reservations = new List<Reservation>();
+
+            foreach (ReservationInvoice reservationInvoice in reservationInvoices)
+            {
+                reservations.Add(reservationInvoice.reservation);
+            }
+
+            viewModel.Reservations = new List<Reservation>(reservations);
+
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (currentUser.IsInRole("Admin"))
+            {
+                return View(viewModel);
+            }
+            else
+            {
+                List<Customer> customers = _context.Customer.ToList();
+                Customer currentCustomer = new Customer();
+                foreach (Customer customer in customers)
+                {
+                    if (customer.UserID == currentUserID)
+                    {
+                        currentCustomer = customer;
+                    }
+                }
+                if (currentCustomer.CustomerID == invoice.CustomerID)
+                {
+                    return View(viewModel);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
 
             return View(viewModel);
         }
@@ -105,9 +143,11 @@ namespace House.Controllers
             if (CusID>0)
             {
                 List<Reservation> reservations = await _context.Reservation
+                    .Include(x => x.room)
+                    .Include(x => x.period)
                     .Where(x => x.CustomerID == CusID).ToListAsync();
 
-                viewModel.ReservationList = new SelectList(reservations, "ReservationID", "Date");
+                viewModel.ReservationList = new SelectList(reservations, "ReservationID", "InvoiceView");
 
             }
             else
