@@ -12,7 +12,7 @@ using House.ViewModels;
 
 namespace House.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class RoomController : Controller
     {
         private readonly HouseContext _context;

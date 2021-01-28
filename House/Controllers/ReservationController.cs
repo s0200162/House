@@ -105,6 +105,11 @@ namespace House.Controllers
             viewModel.Reservation.RoomID = viewModel.SelectedRoom ?? -1;
             viewModel.Reservation.Date = viewModel.SelectedDate ?? default;
             viewModel.Reservation.PeriodID = viewModel.SelectedPeriod ?? -1;
+
+            Room room = _context.Room.Find(viewModel.SelectedRoom);
+            
+            viewModel.Reservation.Price = room.PriceHour * 2;
+
             if (ModelState.IsValid)
             {
                 _context.Add(viewModel.Reservation);

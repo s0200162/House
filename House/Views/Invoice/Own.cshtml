@@ -1,34 +1,37 @@
 ﻿@model IEnumerable<House.Models.Invoice>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Facturen";
 }
 
-<h1>Index</h1>
+<h1>Overzicht Facturen</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.customer.Fullname)
+                Naam
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                Datum aangemaakt
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndDate)
+                Te betalen voor
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Paid)
+                Al betaald
             </th>
-            <th></th>
+            <th>
+                Bedrag
+            </th>
+            <th>
+                Detail
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.customer.Fullname)
@@ -43,11 +46,12 @@
                 @Html.DisplayFor(modelItem => item.Paid)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.InvoiceID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InvoiceID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InvoiceID">Delete</a>
+                Totale prijs???
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.InvoiceID">Detail</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>

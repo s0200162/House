@@ -12,6 +12,7 @@ namespace House.Models
         public int CustomerID { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
+        public String Fullname => $"{Firstname}, {Lastname}";
         public int ProfessionID { get; set; }
         public Profession Profession { get; set; }
         public ICollection<Reservation> Reservations { get; set; }

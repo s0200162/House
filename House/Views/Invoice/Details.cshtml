@@ -1,4 +1,4 @@
-﻿@model House.Models.Invoice
+﻿@model House.ViewModels.DetailsInvoiceViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -7,36 +7,38 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Invoice</h4>
+    <h2>Invoice</h2>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.customer.Firstname)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Paid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Paid)
-        </dd>
-    </dl>
+
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Invoice.InvoiceID" />
+            <div class="form-group">
+                <label asp-for="Invoice.Date" class="control-label"></label>
+                <input asp-for="Invoice.Date" class="form-control" />
+                <span asp-validation-for="Invoice.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Invoice.EndDate" class="control-label"></label>
+                <input asp-for="Invoice.EndDate" class="form-control" />
+                <span asp-validation-for="Invoice.EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Invoice.Paid" /> @Html.DisplayNameFor(model => model.Invoice.Paid)
+                </label>
+            </div>
+            <div class="form-group">
+                <select asp-for="Invoice.ReservationInvoices" asp-items="Model.ReservationList"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.InvoiceID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

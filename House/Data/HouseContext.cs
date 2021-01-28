@@ -37,6 +37,7 @@ namespace House.Data
             modelBuilder.Entity<Customer>().Property(p => p.Firstname).IsRequired();
             modelBuilder.Entity<Customer>().Property(p => p.Lastname).IsRequired();
             modelBuilder.Entity<Customer>().Property(p => p.ProfessionID).IsRequired();
+            modelBuilder.Entity<Customer>().Ignore(p => p.Fullname);
 
             modelBuilder.Entity<CustomUser>()
                 .HasOne(c => c.Customer)
@@ -53,6 +54,7 @@ namespace House.Data
             modelBuilder.Entity<Reservation>().Property(p => p.RoomID).IsRequired();
             modelBuilder.Entity<Reservation>().Property(p => p.Date).IsRequired();
             modelBuilder.Entity<Reservation>().Property(p => p.PeriodID).IsRequired();
+            modelBuilder.Entity<Reservation>().Ignore(p => p.InvoiceView);
 
             modelBuilder.Entity<Profession>().ToTable("Profession");
             modelBuilder.Entity<Profession>().Property(p => p.Description).IsRequired();

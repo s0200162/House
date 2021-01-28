@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
 using House.ViewModels;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace House.Controllers
 {
+    [Authorize]
     public class InvoiceController : Controller
     {
         private readonly HouseContext _context;
@@ -21,9 +24,31 @@ namespace House.Controllers
         }
 
         // GET: Invoice
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var houseContext = _context.Invoice.Include(i => i.customer);
+            return View(await houseContext.ToListAsync());
+        }
+
+        // GET: Reservation/Own
+        public async Task<IActionResult> Own()
+        {
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            List<Customer> customers = _context.Customer.ToList();
+            Customer currentCustomer = new Customer();
+            foreach (Customer customer in customers)
+            {
+                if (customer.UserID == currentUserID)
+                {
+                    currentCustomer = customer;
+                }
+            }
+
+            var houseContext = _context.Invoice.Include(r => r.customer)
+                .Where(x => x.CustomerID == currentCustomer.CustomerID);
             return View(await houseContext.ToListAsync());
         }
 
@@ -35,25 +60,34 @@ namespace House.Controllers
                 return NotFound();
             }
 
-            var invoice = await _context.Invoice
-                .Include(i => i.customer)
-                .FirstOrDefaultAsync(m => m.InvoiceID == id);
+            Invoice invoice = await _context.Invoice
+                .Include(x => x.ReservationInvoices)
+                .SingleOrDefaultAsync(x => x.InvoiceID == id);
             if (invoice == null)
             {
                 return NotFound();
             }
 
-            return View(invoice);
+            DetailsInvoiceViewModel viewModel = new DetailsInvoiceViewModel();
+            viewModel.Invoice = invoice;
+            List<Reservation> reservations = await _context.Reservation
+                .Include(x => x.period)
+                .Include(x => x.room)
+                .Where(x => x.CustomerID == invoice.CustomerID).ToListAsync();
+            viewModel.ReservationList = new SelectList(reservations, "ReservationID", "InvoiceView");
+
+            return View(viewModel);
         }
 
         // GET: Invoice/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             CreateInvoiceViewModel viewModel = new CreateInvoiceViewModel();
 
             viewModel.Invoice = new Invoice();
             List<Customer> customers = _context.Customer.ToList();
-            viewModel.Customers = new SelectList(customers, "CustomerID", "Firstname");
+            viewModel.Customers = new SelectList(customers, "CustomerID", "Fullname");
             viewModel.ReservationList = new SelectList(Enumerable.Empty<SelectListItem>());
 
             //new SelectList(_context.Reservation, "ReservationID", "Date");
@@ -62,15 +96,8 @@ namespace House.Controllers
             return View(viewModel);
         }
 
-        public JsonResult FetchReservations(int ID)
-        {
-            var data = _context.Reservation.ToList()
-                .Where(x => x.CustomerID == ID)
-                .Select(x => new { Value = x.ReservationID, Text = x.Date });
-            return Json(data);
-        }
-
         // GET: Reservation filtered on customerID
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Search(CreateInvoiceViewModel viewModel)
         {
             int CusID = viewModel.Invoice.CustomerID;
@@ -90,6 +117,7 @@ namespace House.Controllers
             viewModel.Invoice = new Invoice();
             List<Customer> customers = _context.Customer.ToList();
             viewModel.Customers = new SelectList(customers, "CustomerID", "Firstname", CusID) ;
+            viewModel.SelectedCustomer = CusID;
             viewModel.SelectedReservations = new List<int>();
 
             return View("Create", viewModel);
@@ -100,6 +128,7 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateInvoiceViewModel viewModel)
         {
             viewModel.Invoice = new Invoice();
@@ -107,8 +136,7 @@ namespace House.Controllers
             viewModel.Invoice.Date = DateTime.Today;
             viewModel.Invoice.EndDate = DateTime.Today.AddDays(14);
             viewModel.Invoice.Paid = false;
-
-            //customerID toevoegen, wordt niet meer meegegeven?
+            viewModel.Invoice.CustomerID = viewModel.SelectedCustomer ?? -1;
 
             if (ModelState.IsValid)
             {
@@ -125,7 +153,11 @@ namespace House.Controllers
                     });
                 }
 
-
+                Invoice invoice = await _context.Invoice.Include(x => x.ReservationInvoices)
+                    .SingleOrDefaultAsync(x => x.InvoiceID == viewModel.Invoice.InvoiceID);
+                invoice.ReservationInvoices.AddRange(newInvoices);
+                _context.Update(invoice);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -134,6 +166,7 @@ namespace House.Controllers
         }
 
         // GET: Invoice/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -155,6 +188,7 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("InvoiceID,CustomerID,Date,EndDate,Paid")] Invoice invoice)
         {
             if (id != invoice.InvoiceID)
@@ -187,6 +221,7 @@ namespace House.Controllers
         }
 
         // GET: Invoice/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -208,6 +243,7 @@ namespace House.Controllers
         // POST: Invoice/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var invoice = await _context.Invoice.FindAsync(id);

@@ -3,4 +3,36 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Lijst met vraag en antwoord.</p>
+<h2>Accordion</h2>
+
+<button class="accordion">Kan ik ook een ruimte huren als particulier?</button>
+<div class="panel">
+    <p>Dit is helaas niet mogelijk, onze ruimtes kunnen enkel gebruikt worden voor medische en paramedische doeleinde. Dit is ook de reden dat je je beroep moet meegeven bij registratie. </p>
+</div>
+
+<button class="accordion">Mijn beroep staat niet tussen de keuzemogelijkheden?</button>
+<div class="panel">
+    <p>Als je merkt dat je eigen beroep niet tussen de keuzemogelijkheden staat, en je denkt toch onder de bedoelde categorie te vallen, mag je contact opnemen met ons. We bekijken dan samen of het mogelijk is voor jou om een ruimte te huren.</p>
+</div>
+
+<button class="accordion">Hoe gebeurt de afrekening?</button>
+<div class="panel">
+    <p>Elke eerste werkdag van de maand wordt er een factuur opgemaakt voor de vorige maand, deze zal zichtbaar zijn op de website en is te betalen binnen een termijn van twee weken. </p>
+</div>
+
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
