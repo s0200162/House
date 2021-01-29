@@ -37,7 +37,7 @@ namespace House.Controllers
             ClaimsPrincipal currentUser = this.User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            List<Customer> customers = _context.Customer.ToList();
+            List<Customer> customers =  await _context.Customer.ToListAsync();
             Customer currentCustomer = new Customer();
             foreach (Customer customer in customers)
             {
@@ -96,7 +96,7 @@ namespace House.Controllers
             }
             else
             {
-                List<Customer> customers = _context.Customer.ToList();
+                List<Customer> customers = await _context.Customer.ToListAsync();
                 Customer currentCustomer = new Customer();
                 foreach (Customer customer in customers)
                 {
@@ -154,7 +154,7 @@ namespace House.Controllers
             }
 
             viewModel.Invoice = new Invoice();
-            List<Customer> customers = _context.Customer.ToList();
+            List<Customer> customers = await _context.Customer.ToListAsync();
             viewModel.Customers = new SelectList(customers, "CustomerID", "Firstname", CusID) ;
             viewModel.SelectedCustomer = CusID;
             viewModel.SelectedReservations = new List<int>();
@@ -245,22 +245,9 @@ namespace House.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(invoice);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!InvoiceExists(invoice.InvoiceID))
-                    {
-                        return View("CustomNotFound");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(invoice);
+                await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", invoice.CustomerID);

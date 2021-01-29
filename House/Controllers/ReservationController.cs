@@ -38,7 +38,7 @@ namespace House.Controllers
             ClaimsPrincipal currentUser = this.User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            List<Customer> customers = _context.Customer.ToList();
+            List<Customer> customers = await _context.Customer.ToListAsync();
             Customer currentCustomer = new Customer();
             foreach (Customer customer in customers)
             {
@@ -80,7 +80,7 @@ namespace House.Controllers
             }
             else
             {
-                List<Customer> customers = _context.Customer.ToList();
+                List<Customer> customers = await _context.Customer.ToListAsync();
                 Customer currentCustomer = new Customer();
                 foreach (Customer customer in customers)
                 {
@@ -120,7 +120,7 @@ namespace House.Controllers
             ClaimsPrincipal currentUser = this.User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            List<Customer> customers = _context.Customer.ToList();
+            List<Customer> customers = await _context.Customer.ToListAsync();
             Customer currentCustomer = new Customer();
             foreach (Customer customer in customers)
             {
@@ -233,7 +233,7 @@ namespace House.Controllers
             viewModel.SelectedDate = reservation.Date;
             viewModel.SelectedRoom = reservation.RoomID;
             viewModel.SelectedPeriod = reservation.PeriodID;
-            List<Location> locations = _context.Location.ToList();
+            List<Location> locations = await _context.Location.ToListAsync();
             viewModel.LocationList = new SelectList(locations, "LocationID", "NameAndPlace", room.LocationID);
             if (viewModel.SelectedLocation.HasValue)
             {
@@ -247,7 +247,7 @@ namespace House.Controllers
             }
             if (viewModel.SelectedRoom.HasValue && viewModel.SelectedDate.HasValue)
             {
-                IEnumerable<Period> hours = _context.Period.ToList();
+                IEnumerable<Period> hours = await _context.Period.ToListAsync();
                 viewModel.PeriodList = new SelectList(hours, "PeriodID", "Hour", reservation.PeriodID);
             }
             else
@@ -274,22 +274,9 @@ namespace House.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(reservation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReservationExists(reservation.ReservationID))
-                    {
-                        return View("CustomNotFound");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(reservation);
+                await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
@@ -325,7 +312,7 @@ namespace House.Controllers
             }
             else
             {
-                List<Customer> customers = _context.Customer.ToList();
+                List<Customer> customers = await _context.Customer.ToListAsync();
                 Customer currentCustomer = new Customer();
                 foreach (Customer customer in customers)
                 {

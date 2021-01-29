@@ -98,22 +98,9 @@ namespace House.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(location);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LocationExists(location.LocationID))
-                    {
-                        return View("CustomNotFound");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(location);
+                await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(location);

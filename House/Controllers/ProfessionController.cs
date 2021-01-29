@@ -98,22 +98,9 @@ namespace House.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(profession);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProfessionExists(profession.ProfessionID))
-                    {
-                        return View("CustomNotFound");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(profession);
+                 await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(profession);
