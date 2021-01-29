@@ -2,6 +2,7 @@
 using House.Data;
 using House.Models;
 using House.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace House.Controllers
 {
+    [Authorize]
     public class ReservationController : Controller
     {
         private readonly HouseContext _context;
@@ -23,6 +25,7 @@ namespace House.Controllers
         }
 
         // GET: Reservation
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var houseContext = _context.Reservation.Include(r => r.customer).Include(r => r.room).Include(r => r.period);
