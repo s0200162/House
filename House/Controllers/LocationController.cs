@@ -33,14 +33,14 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var location = await _context.Location
                 .FirstOrDefaultAsync(m => m.LocationID == id);
             if (location == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(location);
@@ -73,13 +73,13 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return View("~/Home/CustomNotFound");
+                return View("CustomNotFound");
             }
 
             var location = await _context.Location.FindAsync(id);
             if (location == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
             return View(location);
         }
@@ -107,7 +107,7 @@ namespace House.Controllers
                 {
                     if (!LocationExists(location.LocationID))
                     {
-                        return NotFound();
+                        return View("CustomNotFound");
                     }
                     else
                     {
@@ -124,14 +124,14 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var location = await _context.Location
                 .FirstOrDefaultAsync(m => m.LocationID == id);
             if (location == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(location);

@@ -33,7 +33,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var customer = await _context.Customer
@@ -42,7 +42,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.CustomerID == id);
             if (customer == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(customer);
@@ -79,13 +79,13 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var customer = await _context.Customer.FindAsync(id);
             if (customer == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
             ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id", customer.UserID);
             ViewData["ProfessionID"] = new SelectList(_context.Profession, "ProfessionID", "Description", customer.ProfessionID);
@@ -101,7 +101,7 @@ namespace House.Controllers
         {
             if (id != customer.CustomerID)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             if (ModelState.IsValid)
@@ -115,7 +115,7 @@ namespace House.Controllers
                 {
                     if (!CustomerExists(customer.CustomerID))
                     {
-                        return NotFound();
+                        return View("CustomNotFound");
                     }
                     else
                     {
@@ -134,7 +134,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var customer = await _context.Customer
@@ -143,7 +143,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.CustomerID == id);
             if (customer == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(customer);

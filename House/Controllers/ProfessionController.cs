@@ -33,14 +33,14 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var profession = await _context.Profession
                 .FirstOrDefaultAsync(m => m.ProfessionID == id);
             if (profession == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(profession);
@@ -73,13 +73,13 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var profession = await _context.Profession.FindAsync(id);
             if (profession == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
             return View(profession);
         }
@@ -93,7 +93,7 @@ namespace House.Controllers
         {
             if (id != profession.ProfessionID)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             if (ModelState.IsValid)
@@ -107,7 +107,7 @@ namespace House.Controllers
                 {
                     if (!ProfessionExists(profession.ProfessionID))
                     {
-                        return NotFound();
+                        return View("CustomNotFound");
                     }
                     else
                     {
@@ -124,14 +124,14 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var profession = await _context.Profession
                 .FirstOrDefaultAsync(m => m.ProfessionID == id);
             if (profession == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(profession);

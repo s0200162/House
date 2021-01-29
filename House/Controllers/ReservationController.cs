@@ -58,7 +58,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var reservation = await _context.Reservation
@@ -68,7 +68,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.ReservationID == id);
             if (reservation == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             ClaimsPrincipal currentUser = this.User;
@@ -95,7 +95,7 @@ namespace House.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return View("CustomNotFound");
                 }
             }
         }
@@ -213,13 +213,13 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var reservation = await _context.Reservation.FindAsync(id);
             if (reservation == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             viewModel.Reservation = reservation;
@@ -269,7 +269,7 @@ namespace House.Controllers
         {
             if (id != reservation.ReservationID)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             if (ModelState.IsValid)
@@ -283,7 +283,7 @@ namespace House.Controllers
                 {
                     if (!ReservationExists(reservation.ReservationID))
                     {
-                        return NotFound();
+                        return View("CustomNotFound");
                     }
                     else
                     {
@@ -303,7 +303,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var reservation = await _context.Reservation
@@ -313,7 +313,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.ReservationID == id);
             if (reservation == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             ClaimsPrincipal currentUser = this.User;
@@ -340,7 +340,7 @@ namespace House.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return View("CustomNotFound");
                 }
             }
 

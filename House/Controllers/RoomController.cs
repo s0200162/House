@@ -34,7 +34,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var room = await _context.Room
@@ -42,7 +42,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.RoomID == id);
             if (room == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(room);
@@ -80,14 +80,14 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             EditRoomViewModel viewModel = new EditRoomViewModel();
             viewModel.Room = await _context.Room.FindAsync(id);
             if (viewModel.Room == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
             viewModel.Locations = new SelectList(_context.Location, "LocationID", "NameAndPlace", viewModel.Room.LocationID);
             return View(viewModel);
@@ -102,7 +102,7 @@ namespace House.Controllers
         {
             if (id != viewModel.Room.RoomID)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             if (ModelState.IsValid)
@@ -121,7 +121,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var room = await _context.Room
@@ -129,7 +129,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.RoomID == id);
             if (room == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(room);

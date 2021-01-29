@@ -57,7 +57,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             Invoice invoice = await _context.Invoice
@@ -66,7 +66,7 @@ namespace House.Controllers
                 .SingleOrDefaultAsync(x => x.InvoiceID == id);
             if (invoice == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             List<ReservationInvoice> reservationInvoices = await _context.ReservationInvoice
@@ -111,7 +111,7 @@ namespace House.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return View("CustomNotFound");
                 }
             }
         }
@@ -218,13 +218,13 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var invoice = await _context.Invoice.FindAsync(id);
             if (invoice == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
             ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Fullname", invoice.CustomerID);
             return View(invoice);
@@ -240,7 +240,7 @@ namespace House.Controllers
         {
             if (id != invoice.InvoiceID)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             if (ModelState.IsValid)
@@ -254,7 +254,7 @@ namespace House.Controllers
                 {
                     if (!InvoiceExists(invoice.InvoiceID))
                     {
-                        return NotFound();
+                        return View("CustomNotFound");
                     }
                     else
                     {
@@ -273,7 +273,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             var invoice = await _context.Invoice
@@ -281,7 +281,7 @@ namespace House.Controllers
                 .FirstOrDefaultAsync(m => m.InvoiceID == id);
             if (invoice == null)
             {
-                return NotFound();
+                return View("CustomNotFound");
             }
 
             return View(invoice);
