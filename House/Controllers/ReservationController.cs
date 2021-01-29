@@ -28,8 +28,8 @@ namespace House.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var houseContext = _context.Reservation.Include(r => r.customer).Include(r => r.room).Include(r => r.period);
-            return View(await houseContext.ToListAsync());
+            List<Reservation> reservations = await _context.Reservation.Include(r => r.customer).Include(r => r.room).Include(r => r.period).ToListAsync();
+            return View(reservations);
         }
 
         // GET: Reservation/Own

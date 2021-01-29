@@ -31,27 +31,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (Invoice invoice in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.customer.Fullname)
+                @Html.DisplayFor(modelItem => invoice.customer.Fullname)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Date)
+                @Html.DisplayFor(modelItem => invoice.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
+                @Html.DisplayFor(modelItem => invoice.EndDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Paid)
+                @Html.DisplayFor(modelItem => invoice.Paid)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
+                @Html.DisplayFor(modelItem => invoice.TotalPrice)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.InvoiceID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InvoiceID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InvoiceID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@invoice.InvoiceID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@invoice.InvoiceID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@invoice.InvoiceID">Delete</a>
             </td>
         </tr>
 }

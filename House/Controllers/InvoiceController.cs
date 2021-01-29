@@ -27,8 +27,8 @@ namespace House.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var houseContext = _context.Invoice.Include(i => i.customer);
-            return View(await houseContext.ToListAsync());
+            List<Invoice> invoices = await _context.Invoice.Include(i => i.customer).ToListAsync();
+            return View(invoices);
         }
 
         // GET: Reservation/Own
@@ -114,8 +114,6 @@ namespace House.Controllers
                     return NotFound();
                 }
             }
-
-            return View(viewModel);
         }
 
         // GET: Invoice/Create

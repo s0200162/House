@@ -24,8 +24,8 @@ namespace House.Controllers
         // GET: Customer
         public async Task<IActionResult> Index()
         {
-            var houseContext = _context.Customer.Include(c => c.CustomUser).Include(c => c.Profession);
-            return View(await houseContext.ToListAsync());
+            List<Customer> customers = await _context.Customer.Include(c => c.CustomUser).Include(c => c.Profession).ToListAsync();
+            return View(customers);
         }
 
         // GET: Customer/Details/5

@@ -25,8 +25,8 @@ namespace House.Controllers
         // GET: Room
         public async Task<IActionResult> Index()
         {
-            var houseContext = _context.Room.Include(r => r.location);
-            return View(await houseContext.ToListAsync());
+            List<Room> rooms = await _context.Room.Include(r => r.location).ToListAsync();
+            return View(rooms);
         }
 
         // GET: Room/Details/5

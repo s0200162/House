@@ -24,7 +24,8 @@ namespace House.Controllers
         // GET: Profession
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Profession.ToListAsync());
+            List<Profession> professions = await _context.Profession.ToListAsync();
+            return View(professions);
         }
 
         // GET: Profession/Details/5

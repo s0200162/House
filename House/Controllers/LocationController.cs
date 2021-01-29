@@ -24,7 +24,8 @@ namespace House.Controllers
         // GET: Location
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Location.ToListAsync());
+            List<Location> locations = await _context.Location.ToListAsync();
+            return View(locations);
         }
 
         // GET: Location/Details/5
@@ -72,7 +73,7 @@ namespace House.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("~/Home/CustomNotFound");
             }
 
             var location = await _context.Location.FindAsync(id);
@@ -92,7 +93,7 @@ namespace House.Controllers
         {
             if (id != location.LocationID)
             {
-                return NotFound();
+                return View("~/Home/CustomNotFound");
             }
 
             if (ModelState.IsValid)
