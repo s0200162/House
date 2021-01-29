@@ -15,12 +15,15 @@ namespace House.ViewModels
         [Required(ErrorMessage = "Selecteer een locatie")]
         [Display(Name = "Locatie")]
         public int? SelectedLocation { get; set; }
+
         [Required(ErrorMessage = "Selecteer een kamer")]
         [Display(Name = "Kamer")]
         public int? SelectedRoom { get; set; }
+
         [Required(ErrorMessage = "Selecteer een Datum")]
         [Display(Name = "Datum")]
         public DateTime? SelectedDate { get; set; }
+
         [Required(ErrorMessage = "Selecteer een periode")]
         [Display(Name = "Periode")]
         public int? SelectedPeriod { get; set; }

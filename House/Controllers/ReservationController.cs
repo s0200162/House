@@ -254,9 +254,7 @@ namespace House.Controllers
             {
                 viewModel.PeriodList = new SelectList(Enumerable.Empty<SelectListItem>());
             }
-            //ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
-            //ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
-            //ViewData["PeriodID"] = new SelectList(_context.Period, "PeriodID", "Hour", reservation.PeriodID);
+            
             return View(viewModel);
         }
 
@@ -265,24 +263,22 @@ namespace House.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReservationID,CustomerID,RoomID,Date,PeriodID,Price")] Reservation reservation)
+        public async Task<IActionResult> Edit(int id, EditReservationViewModel viewModel)
         {
-            if (id != reservation.ReservationID)
+            if (id != viewModel.Reservation.ReservationID)
             {
                 return View("CustomNotFound");
             }
 
             if (ModelState.IsValid)
             {
-                _context.Update(reservation);
+                _context.Update(viewModel.Reservation);
                 await _context.SaveChangesAsync();
                 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "Firstname", reservation.CustomerID);
-            ViewData["RoomID"] = new SelectList(_context.Room, "RoomID", "Description", reservation.RoomID);
-            ViewData["PeriodID"] = new SelectList(_context.Period, "PeriodID", "Hour", reservation.PeriodID);
-            return View(reservation);
+            
+            return View(viewModel);
         }
 
         // GET: Reservation/Delete/5
