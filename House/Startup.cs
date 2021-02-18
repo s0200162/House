@@ -69,7 +69,7 @@ namespace House
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
 
-                //CreateUserRoles(serviceProvider).Wait();
+                CreateUserRoles(serviceProvider).Wait();
             });
 
            
