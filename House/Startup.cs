@@ -17,6 +17,9 @@ using House.Helpers;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using House.Data.Repository;
+using House.Models;
+using House.Data.UnitOfWork;
 
 namespace House
 {
@@ -42,6 +45,8 @@ namespace House
             services.AddDefaultIdentity<CustomUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<HouseContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();

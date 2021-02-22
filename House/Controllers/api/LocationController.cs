@@ -9,6 +9,8 @@ using House.Data;
 using House.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using House.Data.Repository;
+using House.Data.UnitOfWork;
 
 namespace House.Controllers.api
 {
@@ -16,26 +18,25 @@ namespace House.Controllers.api
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly HouseContext _context;
-
-        public LocationController(HouseContext context)
+        private readonly IUnitOfWork _uow;
+        public LocationController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Location
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Location>>> GetLocation()
         {
-            return await _context.Location.Include(x => x.Rooms).ToListAsync();
+            return await _uow.LocationRepository.GetAll().Include(x => x.Rooms).ToListAsync();
         }
 
         // GET: api/Location/5
-        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
         {
-            var location = await _context.Location.FindAsync(id);
+            Location location = await _uow.LocationRepository.GetById(id);
 
             if (location == null)
             {
@@ -56,22 +57,16 @@ namespace House.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(location).State = EntityState.Modified;
+            _uow.LocationRepository.Update(location);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //foutmelding loggen, eventueel rollback doen als dit geïmplementeerd moet worden
+                //return iets in 400 reeks?
             }
 
             return NoContent();
@@ -83,9 +78,18 @@ namespace House.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Location>> PostLocation(Location location)
         {
-            _context.Location.Add(location);
-            await _context.SaveChangesAsync();
+            _uow.LocationRepository.Create(location);
 
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+                //foutmelding loggen
+                // return Http response in 500 reeks + custom foutmelding
+            }
+            
             return CreatedAtAction("GetLocation", new { id = location.LocationID }, location);
         }
 
@@ -93,21 +97,24 @@ namespace House.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Location>> DeleteLocation(int id)
         {
-            var location = await _context.Location.FindAsync(id);
+            Location location = await _uow.LocationRepository.GetById(id);
             if (location == null)
             {
                 return NotFound();
             }
 
-            _context.Location.Remove(location);
-            await _context.SaveChangesAsync();
+            _uow.LocationRepository.Delete(location);
 
-            return location;
-        }
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+                //foutmelding, zie vorige
+            }
 
-        private bool LocationExists(int id)
-        {
-            return _context.Location.Any(e => e.LocationID == id);
+            return NoContent();
         }
     }
 }
