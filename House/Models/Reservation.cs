@@ -19,7 +19,7 @@ namespace House.Models
         public Period period { get; set; }
         public double Price { get; set; }
         public List<ReservationInvoice> ReservationInvoices { get; set; }
-        public String InvoiceView => $"{Date.ToString("dd/MM/yyyy")}, {period.Hour}, {room.Description}, {Price}";
+        //public string InvoiceView => $"{Date.ToString("dd/MM/yyyy")}, {period.Hour}, {room.Description}, {Price}";
         public override string ToString()
         {
             return Date.ToString("dd/MM/yyyy") + ", " + period.Hour + ", " + room.Description + ", " + Price + "euro" ;

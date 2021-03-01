@@ -145,7 +145,7 @@ namespace House.Controllers
                     .Include(x => x.period)
                     .Where(x => x.CustomerID == CusID).ToListAsync();
 
-                viewModel.ReservationList = new SelectList(reservations, "ReservationID", "InvoiceView");
+                viewModel.ReservationList = new SelectList(reservations, "ReservationID");
 
             }
             else

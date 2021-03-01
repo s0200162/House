@@ -54,7 +54,7 @@ namespace House.Data
             modelBuilder.Entity<Reservation>().Property(p => p.RoomID).IsRequired();
             modelBuilder.Entity<Reservation>().Property(p => p.Date).IsRequired();
             modelBuilder.Entity<Reservation>().Property(p => p.PeriodID).IsRequired();
-            modelBuilder.Entity<Reservation>().Ignore(p => p.InvoiceView);
+            //modelBuilder.Entity<Reservation>().Ignore(p => p.InvoiceView);
 
             modelBuilder.Entity<Profession>().ToTable("Profession");
             modelBuilder.Entity<Profession>().Property(p => p.Description).IsRequired();
