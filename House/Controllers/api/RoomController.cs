@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
+using House.Data.UnitOfWork;
 
 namespace House.Controllers.api
 {
@@ -14,25 +15,25 @@ namespace House.Controllers.api
     [ApiController]
     public class RoomController : ControllerBase
     {
-        private readonly HouseContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public RoomController(HouseContext context)
+        public RoomController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Room
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Room>>> GetRoom()
         {
-            return await _context.Room.ToListAsync();
+            return await _uow.RoomRepository.GetAll().ToListAsync();
         }
 
         // GET: api/Room/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Room>> GetRoom(int id)
         {
-            var room = await _context.Room.FindAsync(id);
+            Room room = await _uow.RoomRepository.GetById(id);
 
             if (room == null)
             {
@@ -53,22 +54,16 @@ namespace House.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(room).State = EntityState.Modified;
+            _uow.RoomRepository.Update(room);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!RoomExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //foutmelding loggen, eventueel rollback doen als dit geïmplementeerd moet worden
+                //return iets in 400 reeks?
             }
 
             return NoContent();
@@ -80,8 +75,17 @@ namespace House.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
-            _context.Room.Add(room);
-            await _context.SaveChangesAsync();
+            _uow.RoomRepository.Create(room);
+
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+                //foutmelding loggen
+                // return Http response in 500 reeks + custom foutmelding
+            }
 
             return CreatedAtAction("GetRoom", new { id = room.RoomID }, room);
         }
@@ -90,21 +94,24 @@ namespace House.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Room>> DeleteRoom(int id)
         {
-            var room = await _context.Room.FindAsync(id);
+            Room room = await _uow.RoomRepository.GetById(id);
             if (room == null)
             {
                 return NotFound();
             }
 
-            _context.Room.Remove(room);
-            await _context.SaveChangesAsync();
+            _uow.RoomRepository.Delete(room);
 
-            return room;
-        }
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+                //foutmelding, zie vorige
+            }
 
-        private bool RoomExists(int id)
-        {
-            return _context.Room.Any(e => e.RoomID == id);
+            return NoContent();
         }
     }
 }

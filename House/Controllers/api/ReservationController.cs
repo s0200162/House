@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
+using House.Data.UnitOfWork;
 
 namespace House.Controllers.api
 {
@@ -14,25 +15,25 @@ namespace House.Controllers.api
     [ApiController]
     public class ReservationController : ControllerBase
     {
-        private readonly HouseContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public ReservationController(HouseContext context)
+        public ReservationController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Reservation
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation()
         {
-            return await _context.Reservation.ToListAsync();
+            return await _uow.ReservationRepository.GetAll().ToListAsync();
         }
 
         // GET: api/Reservation/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
-            var reservation = await _context.Reservation.FindAsync(id);
+            Reservation reservation = await _uow.ReservationRepository.GetById(id);
 
             if (reservation == null)
             {
@@ -53,22 +54,15 @@ namespace House.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(reservation).State = EntityState.Modified;
+            _uow.ReservationRepository.Update(reservation);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!ReservationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //
             }
 
             return NoContent();
@@ -80,8 +74,17 @@ namespace House.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
-            _context.Reservation.Add(reservation);
-            await _context.SaveChangesAsync();
+            _uow.ReservationRepository.Create(reservation);
+
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+
+                throw;
+            }
 
             return CreatedAtAction("GetReservation", new { id = reservation.ReservationID }, reservation);
         }
@@ -90,21 +93,25 @@ namespace House.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Reservation>> DeleteReservation(int id)
         {
-            var reservation = await _context.Reservation.FindAsync(id);
+            Reservation reservation = await _uow.ReservationRepository.GetById(id);
             if (reservation == null)
             {
                 return NotFound();
             }
 
-            _context.Reservation.Remove(reservation);
-            await _context.SaveChangesAsync();
+            _uow.ReservationRepository.Delete(reservation);
 
-            return reservation;
-        }
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
 
-        private bool ReservationExists(int id)
-        {
-            return _context.Reservation.Any(e => e.ReservationID == id);
+                throw;
+            }
+
+            return NoContent();
         }
     }
 }

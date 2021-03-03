@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
+using House.Data.UnitOfWork;
 
 namespace House.Controllers.api
 {
@@ -14,25 +15,25 @@ namespace House.Controllers.api
     [ApiController]
     public class InvoiceController : ControllerBase
     {
-        private readonly HouseContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public InvoiceController(HouseContext context)
+        public InvoiceController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Invoice
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Invoice>>> GetInvoice()
         {
-            return await _context.Invoice.ToListAsync();
+            return await _uow.InvoiceRepository.GetAll().ToListAsync();
         }
 
         // GET: api/Invoice/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Invoice>> GetInvoice(int id)
         {
-            var invoice = await _context.Invoice.FindAsync(id);
+            Invoice invoice = await _uow.InvoiceRepository.GetById(id);
 
             if (invoice == null)
             {
@@ -53,22 +54,15 @@ namespace House.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(invoice).State = EntityState.Modified;
+            _uow.InvoiceRepository.Update(invoice);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!InvoiceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //
             }
 
             return NoContent();
@@ -80,8 +74,17 @@ namespace House.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Invoice>> PostInvoice(Invoice invoice)
         {
-            _context.Invoice.Add(invoice);
-            await _context.SaveChangesAsync();
+            _uow.InvoiceRepository.Create(invoice);
+
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+
+                throw;
+            }
 
             return CreatedAtAction("GetInvoice", new { id = invoice.InvoiceID }, invoice);
         }
@@ -90,21 +93,25 @@ namespace House.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Invoice>> DeleteInvoice(int id)
         {
-            var invoice = await _context.Invoice.FindAsync(id);
+            Invoice invoice = await _uow.InvoiceRepository.GetById(id);
             if (invoice == null)
             {
                 return NotFound();
             }
 
-            _context.Invoice.Remove(invoice);
-            await _context.SaveChangesAsync();
+            _uow.InvoiceRepository.Delete(invoice);
 
-            return invoice;
-        }
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
 
-        private bool InvoiceExists(int id)
-        {
-            return _context.Invoice.Any(e => e.InvoiceID == id);
+                throw;
+            }
+
+            return NoContent();
         }
     }
 }

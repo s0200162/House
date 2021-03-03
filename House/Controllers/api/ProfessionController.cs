@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
+using House.Data.UnitOfWork;
 
 namespace House.Controllers.api
 {
@@ -14,25 +15,25 @@ namespace House.Controllers.api
     [ApiController]
     public class ProfessionController : ControllerBase
     {
-        private readonly HouseContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public ProfessionController(HouseContext context)
+        public ProfessionController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Profession
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Profession>>> GetProfession()
         {
-            return await _context.Profession.ToListAsync();
+            return await _uow.ProfessionRepository.GetAll().ToListAsync();
         }
 
         // GET: api/Profession/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Profession>> GetProfession(int id)
         {
-            var profession = await _context.Profession.FindAsync(id);
+            Profession profession = await _uow.ProfessionRepository.GetById(id);
 
             if (profession == null)
             {
@@ -53,22 +54,15 @@ namespace House.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(profession).State = EntityState.Modified;
+            _uow.ProfessionRepository.Update(profession);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!ProfessionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                //nog één en dezelfde exception maken voor alle API-controllers
             }
 
             return NoContent();
@@ -80,8 +74,17 @@ namespace House.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Profession>> PostProfession(Profession profession)
         {
-            _context.Profession.Add(profession);
-            await _context.SaveChangesAsync();
+            _uow.ProfessionRepository.Create(profession);
+
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
+
+                throw;
+            }
 
             return CreatedAtAction("GetProfession", new { id = profession.ProfessionID }, profession);
         }
@@ -90,21 +93,25 @@ namespace House.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Profession>> DeleteProfession(int id)
         {
-            var profession = await _context.Profession.FindAsync(id);
+            Profession profession = await _uow.ProfessionRepository.GetById(id);
             if (profession == null)
             {
                 return NotFound();
             }
 
-            _context.Profession.Remove(profession);
-            await _context.SaveChangesAsync();
+            _uow.ProfessionRepository.Delete(profession);
 
-            return profession;
-        }
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception exception)
+            {
 
-        private bool ProfessionExists(int id)
-        {
-            return _context.Profession.Any(e => e.ProfessionID == id);
+                throw;
+            }
+
+            return NoContent();
         }
     }
 }
