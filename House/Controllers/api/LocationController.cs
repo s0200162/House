@@ -25,6 +25,7 @@ namespace House.Controllers.api
         }
 
         // GET: api/Location
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Location>>> GetLocation()
         {
@@ -32,7 +33,7 @@ namespace House.Controllers.api
         }
 
         // GET: api/Location/5
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(int id)
         {

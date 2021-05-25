@@ -16,30 +16,42 @@ namespace House.Controllers.api
     public class RoomController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
+        private readonly HouseContext _context;
 
-        public RoomController(IUnitOfWork uow)
+        public RoomController(IUnitOfWork uow, HouseContext context)
         {
             _uow = uow;
+            _context = context;
         }
 
         // GET: api/Room
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Room>>> GetRoom()
         {
-            return await _uow.RoomRepository.GetAll().ToListAsync();
+            return await _uow.RoomRepository.GetAll()
+                .Include(x => x.location)
+                .ToListAsync();
         }
 
         // GET: api/Room/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Room>> GetRoom(int id)
         {
-            Room room = await _uow.RoomRepository.GetById(id);
+            //Room room = await _uow.RoomRepository.GetById(id);
 
+            //if (room == null)
+            //{
+            //    return NotFound();
+            //}
+            //await _context.Entry(room).Collection("location").LoadAsync();
+            //return room;
+            var room = await _context.Room
+                .Include(r => r.location)
+                .FirstOrDefaultAsync(m => m.RoomID == id);
             if (room == null)
             {
                 return NotFound();
             }
-
             return room;
         }
 
@@ -53,7 +65,6 @@ namespace House.Controllers.api
             {
                 return BadRequest();
             }
-
             _uow.RoomRepository.Update(room);
 
             try

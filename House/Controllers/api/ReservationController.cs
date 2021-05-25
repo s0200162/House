@@ -16,30 +16,46 @@ namespace House.Controllers.api
     public class ReservationController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
+        private readonly HouseContext _context;
 
-        public ReservationController(IUnitOfWork uow)
+        public ReservationController(IUnitOfWork uow, HouseContext context)
         {
             _uow = uow;
+            _context = context;
         }
 
         // GET: api/Reservation
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation()
         {
-            return await _uow.ReservationRepository.GetAll().ToListAsync();
+            return await _uow.ReservationRepository.GetAll()
+                .Include(x => x.room)
+                .Include(x => x.customer)
+                .Include(x => x.period)
+                .ToListAsync();
         }
 
         // GET: api/Reservation/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
-            Reservation reservation = await _uow.ReservationRepository.GetById(id);
+            //Reservation reservation = await _uow.ReservationRepository.GetById(id);
 
+            //if (reservation == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return reservation;
+            var reservation = await _context.Reservation
+                .Include(r => r.customer)
+                .Include(r => r.room)
+                .Include(r => r.period)
+                .FirstOrDefaultAsync(m => m.ReservationID == id);
             if (reservation == null)
             {
                 return NotFound();
             }
-
             return reservation;
         }
 
