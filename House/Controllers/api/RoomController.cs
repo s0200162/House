@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
 using House.Data.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace House.Controllers.api
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
@@ -32,6 +35,12 @@ namespace House.Controllers.api
                 .Include(x => x.location)
                 .ToListAsync();
         }
+
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<IEnumerable<Room>>> GetRoomloc(int id)
+        //{
+        //    return await _context.Room.Where(x => x.LocationID == id).ToListAsync();
+        //}
 
         // GET: api/Room/5
         [HttpGet("{id}")]

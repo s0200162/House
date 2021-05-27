@@ -1,6 +1,8 @@
 ﻿using House.Areas.Identity.Data;
+using House.Data;
 using House.Entities;
 using House.Helpers;
+using House.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,16 +25,19 @@ namespace House.Controllers.api
         private readonly SignInManager<CustomUser> _signInManager;
         private readonly UserManager<CustomUser> _userManager;
         private readonly AppSettings _appSettings;
+        private readonly HouseContext _context;
 
         public UserController(
             UserManager<CustomUser> userManager,
             SignInManager<CustomUser> signInManager,
-            IOptions<AppSettings> appSettings
+            IOptions<AppSettings> appSettings,
+            HouseContext context
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _appSettings = appSettings.Value;
+            _context = context;
         }
 
 
@@ -46,6 +51,8 @@ namespace House.Controllers.api
             {
                 CustomUser customUser = _userManager.Users.SingleOrDefault(r => r.Email == apiUser.Username);
                 apiUser.Token = GenerateJwtToken(apiUser.Username, customUser).ToString();
+                Customer customer = _context.Customer.SingleOrDefault(x => x.CustomUser.UserName == apiUser.Username);
+                apiUser.CustomerID = customer.CustomerID;
 
                 return apiUser;
             }

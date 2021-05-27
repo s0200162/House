@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using House.Data;
 using House.Models;
 using House.Data.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace House.Controllers.api
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ReservationController : ControllerBase
